@@ -1,0 +1,4 @@
+# Todo
+- [ ] Add grouped bar graph to show men, women, and not reported for the total graph count.
+- [ ] Make the functions more scalable / more DRY
+- [ ] Get more statistics to do (possibly age or outcomes next)
