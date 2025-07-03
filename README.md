@@ -10,5 +10,5 @@ Working on it.
 Ongoing. 2025-06-29 to current.
 
 ## Resources Used
-- SFU data from [SFU Institutional Research and Planning - Students](https://www.sfu.ca/irp/students.html#outcomes)
+- SFU data from [SFU Institutional Research and Planning - Students](https://www.sfu.ca/irp/students.html)
 - Python
