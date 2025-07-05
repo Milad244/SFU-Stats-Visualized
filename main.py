@@ -1,9 +1,11 @@
+from enum import Enum
 import matplotlib
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import plotly.express as px
+import functools
 
 matplotlib.use('TKAgg')
 app = Flask(__name__)
@@ -23,9 +25,62 @@ def nan_to_int(num: int) -> int:
     return num
 
 
+class Stat:
+    """
+    Represents an (x,y) graph
+    """
+    def __init__(self, label: str, graph_title: str, x_lbl: str, x_values: list, y_lbl: str, y_values: list):
+        self.label = label
+        self.graph_title = graph_title
+        self.x_lbl = x_lbl
+        self.x_values = x_values
+        self.y_lbl = y_lbl
+        self.y_values = y_values
+
+    @functools.cache
+    def get_bar_graph(self) -> str:
+        df = pd.DataFrame({
+            self.x_lbl: self.x_values,
+            self.y_lbl: self.y_values
+        })
+        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
+        return fig.to_html(full_html=False)
+
+
+def get_sfu_age_headcounts() -> dict[str: Stat]:
+    """
+    Gets the cleaned up age distribution of SFU.
+    :return: A Stat containing headcount by age
+    """
+
+    stat_file = "data/headcount/ST20.db.xlsx"
+    stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8, usecols="A:B")
+
+    stat = Stat(
+            label="Age Distribution",
+            graph_title="Total Count by Age (FALL 2023)",
+            x_lbl="Age",
+            x_values=[],
+            y_lbl="Count",
+            y_values=[]
+        )
+
+    for i, s in stats.iterrows():
+        age = s["Age"]
+        count = nan_to_int(s[2023])
+
+        if age > 90:
+            break
+
+        stat.x_values.append(age)
+        stat.y_values.append(count)
+
+    return {"age-count": stat}
+
+
 class ProgramHeadcount:
     """
-    Class for representing the headcounts from each SFU program.
+    Represents the headcounts from each SFU program.
     """
     def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
         self.faculty = faculty
@@ -36,10 +91,10 @@ class ProgramHeadcount:
         self.total_count = self.men_count + self.women_count + self.nr_count
 
 
-def get_sfu_program_headcounts() -> list[ProgramHeadcount]:
+def get_sfu_program_headcounts() -> dict[str: Stat]:
     """
     Gets the cleaned up headcounts from 2024 for each SFU program.
-    :return: A list of ProgramHeadcount classes containing each program
+    :return: Stats of headcounts by program for three different measures: total-count, men-count, and women-count
     """
     stat_file = "data/headcount/ST04.db.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table by gender", header=11, usecols="A:E")
@@ -59,87 +114,88 @@ def get_sfu_program_headcounts() -> list[ProgramHeadcount]:
             continue  # This needs to be after Faculty check to avoid wrong faculties in future
 
         programs.append(ProgramHeadcount(s["Faculty"], s["Program"], s["Men"], s["Women"], s["Not reported"]))
-        print(programs[-1].__dict__)
+        # print(programs[-1].__dict__)
 
-    return programs
+    # TODO: Make this much cleaner
+    x_lbl = "Program"
+    y_lbl = "Count"
+    total_ordered = sorted(programs, key=lambda p: p.total_count)
+    total_x = [p.program for p in total_ordered]
+    total_y = [p.total_count for p in total_ordered]
+    men_ordered = sorted(programs, key=lambda p: p.men_count)
+    men_x = [p.program for p in men_ordered]
+    men_y = [p.men_count for p in men_ordered]
+    women_ordered = sorted(programs, key=lambda p: p.women_count)
+    women_x = [p.program for p in women_ordered]
+    women_y = [p.women_count for p in women_ordered]
+    return {
+        "total-count": Stat(
+            label="Total Count",
+            graph_title="Total Count by Program",
+            x_lbl=x_lbl,
+            x_values=total_x,
+            y_lbl=y_lbl,
+            y_values=total_y
+        ),
+        "men-count": Stat(
+            label="Men Count",
+            graph_title="Men Count by Program",
+            x_lbl=x_lbl,
+            x_values=men_x,
+            y_lbl=y_lbl,
+            y_values=men_y
+        ),
+        "women-count": Stat(
+            label="Women Count",
+            graph_title="Women Count by Program",
+            x_lbl=x_lbl,
+            x_values=women_x,
+            y_lbl=y_lbl,
+            y_values=women_y
+        )
+    }
 
 
-def create_bar_graph(x_values: list, y_values: list, x_lbl: str, y_lbl: str) -> None:
+@functools.cache
+def get_all_stats() -> list[dict[str: Stat]]:  # TODO: Make it dict instead to group stats in main() easier
     """
-    Creates a simple bar graph for testing purposes.
-    :param x_values: the x values of the graph
-    :param y_values: the corresponding y values of the graph
-    :param x_lbl: the x label
-    :param y_lbl: the y label
-    :return: None
+    Gets all the stats for the website
+    :return: a list of stat categories
     """
-    plt.xlabel(x_lbl)
-    plt.ylabel(y_lbl)
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    plt.subplots_adjust(bottom=0.3)
-    plt.bar(x_values, y_values)
-    plt.show()
-
-
-def graph_program_headcounts(programs: list[ProgramHeadcount]) -> None:
-    """
-    Graphing headcounts in different orders and values. This is for testing purposes.
-    :param programs: A list of ProgramHeadcount classes containing each program
-    :return: None
-    """
-    # Total count graph
-    programs.sort(key=lambda l: l.total_count)
-    x = [p.program for p in programs]
-    y = [p.total_count for p in programs]
-    create_bar_graph(x, y, x_lbl="Program", y_lbl="Total Count")
-    # Man count graph
-    programs.sort(key=lambda l: l.men_count)
-    x = [p.program for p in programs]
-    y = [p.men_count for p in programs]
-    create_bar_graph(x, y, x_lbl="Program", y_lbl="Men Count")
-    # Women count graph
-    programs.sort(key=lambda l: l.women_count)
-    x = [p.program for p in programs]
-    y = [p.women_count for p in programs]
-    create_bar_graph(x, y, x_lbl="Program", y_lbl="Women Count")
-
-
-def back_button() -> dict:
-    return {"label": "Back", "endpoint": "main"}
+    headcount_by_program_stats = get_sfu_program_headcounts()
+    headcount_by_age_stats = get_sfu_age_headcounts()
+    return [headcount_by_program_stats, headcount_by_age_stats]
 
 
 @app.route("/")
 def main():
     """
-    Creates our index(initial) page. This page will contain the selections for what data to see and all other
-    navigation.
+    Creates our index(initial) page. This page will contain the selections for what data to see, the selected data, and
+    all other navigation.
     :return: the rendering string
     """
 
-    buttons = [
-        {"label": "Total Program Headcount", "endpoint": "program_headcounts"},
-        {"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"},
-    ]
+    view = request.args.get("view")
+    graph_html = None
 
-    return render_template("index.html", title="SFU Statistics Visualized", buttons=buttons)
+    all_stats = get_all_stats()
 
+    for stats in all_stats:
+        if view in stats:
+            stat = stats[view]
+            graph_html = stat.get_bar_graph()
 
-@app.route("/program-headcounts")
-def program_headcounts():
-    programs = get_sfu_program_headcounts()  # TODO: move into a new data class because it does not need to reload every time
-    programs.sort(key=lambda l: l.total_count)
-    x = [p.program for p in programs]
-    y = [p.total_count for p in programs]
-    df = pd.DataFrame({
-        "Program": x,
-        "Headcount": y
-    })
+    buttons = []
+    for stats in all_stats:
+        for slug, stat in stats.items():
+            buttons.append({
+                "label": stat.label,
+                "query_url": f"/?view={slug}"
+            })
 
-    fig = px.bar(df, x="Program", y="Headcount", title="Total Headcount by Program")
+    buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
 
-    graph_html = fig.to_html(full_html=False)
-    return render_template("index.html", buttons=[back_button()], graph_html=graph_html)
+    return render_template("index.html", title="SFU Statistics Visualized", buttons=buttons, graph_html=graph_html)
 
 
 if __name__ == '__main__':

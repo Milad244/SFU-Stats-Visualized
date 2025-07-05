@@ -7,17 +7,23 @@
 </head>
 <body>
     <h1>{{ title }}</h1>
-    {% for button in buttons %}
-        {% if button.endpoint %}
-            <form action="{{ url_for(button.endpoint) }}" method="get" style="display:inline;">
-                <button type="submit">{{ button.label }}</button>
-            </form>
+
+    <div>
+      {% for button in buttons %}
+        {% if button.query_url %}
+          <a href="{{ button.query_url }}">
+            <button type="button">{{ button.label }}</button>
+          </a>
         {% elif button.external_url %}
-            <form action="{{ button.external_url }}" method="get" style="display:inline;">
-                <button type="submit">{{ button.label }}</button>
-            </form>
+          <a href="{{ button.external_url }}" target="_blank">
+            <button type="button">{{ button.label }}</button>
+          </a>
         {% endif %}
-    {% endfor %}
-    {{ graph_html|safe }}
+      {% endfor %}
+    </div>
+
+    {% if graph_html %}
+      <div>{{ graph_html | safe }}</div>
+    {% endif %}
 </body>
 </html>
