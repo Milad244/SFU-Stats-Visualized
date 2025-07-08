@@ -3,5 +3,4 @@
 - [x] Get more statistics to do (possibly age or outcomes next)
 - [ ] Make plotly graphs look better
 - [ ] Add more functionality to main page such as another useful feature or an about page
-- [ ] Make entire website look better (html/css changes)
-- [ ] Add sources for each stat
+- [x] Make entire website look better (html/css changes)

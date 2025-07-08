@@ -7,7 +7,6 @@ from flask import Flask, render_template, request
 import plotly.express as px
 import functools
 
-matplotlib.use('TKAgg')
 app = Flask(__name__)
 
 
@@ -27,7 +26,7 @@ def nan_to_int(num: int) -> int:
 
 class Stat:
     """
-    Represents an (x,y) graph
+    Represents an (x,y) graph.
     """
     def __init__(self, label: str, graph_title: str, x_lbl: str, x_values: list, y_lbl: str, y_values: list):
         self.label = label
@@ -45,6 +44,15 @@ class Stat:
         })
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
         return fig.to_html(full_html=False)
+
+
+class StatCategory:
+    """
+    Represents a category of stats.
+    """
+    def __init__(self, title: str, stat: Stat):
+        self.title = title
+        self.stat = stat
 
 
 def get_sfu_age_headcounts() -> dict[str: Stat]:
@@ -78,9 +86,9 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
     return {"age-count": stat}
 
 
-class ProgramHeadcount:
+class SFUProgram:
     """
-    Represents the headcounts from each SFU program.
+    Represents an SFU program.
     """
     def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
         self.faculty = faculty
@@ -91,11 +99,13 @@ class ProgramHeadcount:
         self.total_count = self.men_count + self.women_count + self.nr_count
 
 
-def get_sfu_program_headcounts() -> dict[str: Stat]:
+@functools.cache
+def get_sfu_programs() -> list[SFUProgram]:
     """
-    Gets the cleaned up headcounts from 2024 for each SFU program.
-    :return: Stats of headcounts by program for three different measures: total-count, men-count, and women-count
+    Gets the cleaned up headcounts from 2023/24 for each SFU program.
+    :return: A list of classes representing each program
     """
+
     stat_file = "data/headcount/ST04.db.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table by gender", header=11, usecols="A:E")
 
@@ -113,25 +123,58 @@ def get_sfu_program_headcounts() -> dict[str: Stat]:
         if pd.isna(s["Men"]) and pd.isna(s["Women"]) and pd.isna(s["Not reported"]):
             continue  # This needs to be after Faculty check to avoid wrong faculties in future
 
-        programs.append(ProgramHeadcount(s["Faculty"], s["Program"], s["Men"], s["Women"], s["Not reported"]))
-        # print(programs[-1].__dict__)
+        programs.append(SFUProgram(s["Faculty"], s["Program"], s["Men"], s["Women"], s["Not reported"]))
 
-    # TODO: Make this much cleaner
-    x_lbl = "Program"
+    return programs
+
+
+def get_ordered_x_y(count_dict: dict[str: int]) -> (list, list):
+    """
+    Turns a dictionary into two lists that are in the same order.
+    :param count_dict: the dictionary to convert into two lists
+    :return: a tuple with the first value as x-values and the second value as y-values
+    """
+    ordered_x = []
+    ordered_y = []
+    for key, value in count_dict.items():
+        ordered_x.append(key)
+        ordered_y.append(value)
+
+    n = len(ordered_y)
+    for i in range(n):
+        smallest_index = i
+        for j in range(i + 1, n):
+            if ordered_y[j] < ordered_y[smallest_index]:
+                smallest_index = j
+        ordered_y[i], ordered_y[smallest_index] = ordered_y[smallest_index], ordered_y[i]
+        ordered_x[i], ordered_x[smallest_index] = ordered_x[smallest_index], ordered_x[i]
+
+    return ordered_x, ordered_y
+
+
+def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat]:
+    """
+    Gets the headcounts for each SFU faculty.
+    :return: Stats of headcounts by faculty for three different measures: total-count, men-count, and women-count
+    """
+
+    total_fac = {}
+    men_fac = {}
+    women_fac = {}
+    for program in sfu_programs:
+        total_fac[program.faculty] = total_fac.get(program.faculty, 0) + program.total_count
+        men_fac[program.faculty] = men_fac.get(program.faculty, 0) + program.men_count
+        women_fac[program.faculty] = women_fac.get(program.faculty, 0) + program.women_count
+
+    x_lbl = "Faculty"
     y_lbl = "Count"
-    total_ordered = sorted(programs, key=lambda p: p.total_count)
-    total_x = [p.program for p in total_ordered]
-    total_y = [p.total_count for p in total_ordered]
-    men_ordered = sorted(programs, key=lambda p: p.men_count)
-    men_x = [p.program for p in men_ordered]
-    men_y = [p.men_count for p in men_ordered]
-    women_ordered = sorted(programs, key=lambda p: p.women_count)
-    women_x = [p.program for p in women_ordered]
-    women_y = [p.women_count for p in women_ordered]
+    total_x, total_y = get_ordered_x_y(total_fac)
+    men_x, men_y = get_ordered_x_y(men_fac)
+    women_x, women_y = get_ordered_x_y(women_fac)
     return {
         "total-count": Stat(
             label="Total Count",
-            graph_title="Total Count by Program",
+            graph_title="Total Count by Faculty (2023/24)",
             x_lbl=x_lbl,
             x_values=total_x,
             y_lbl=y_lbl,
@@ -139,7 +182,7 @@ def get_sfu_program_headcounts() -> dict[str: Stat]:
         ),
         "men-count": Stat(
             label="Men Count",
-            graph_title="Men Count by Program",
+            graph_title="Men Count by Faculty (2023/24)",
             x_lbl=x_lbl,
             x_values=men_x,
             y_lbl=y_lbl,
@@ -147,7 +190,52 @@ def get_sfu_program_headcounts() -> dict[str: Stat]:
         ),
         "women-count": Stat(
             label="Women Count",
-            graph_title="Women Count by Program",
+            graph_title="Women Count by Faculty (2023/24)",
+            x_lbl=x_lbl,
+            x_values=women_x,
+            y_lbl=y_lbl,
+            y_values=women_y
+        )
+    }
+
+
+def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat]:
+    """
+    Gets the headcounts for each SFU program.
+    :return: Stats of headcounts by program for three different measures: total-count, men-count, and women-count
+    """
+
+    x_lbl = "Program"
+    y_lbl = "Count"
+    total_ordered = sorted(sfu_programs, key=lambda p: p.total_count)
+    total_x = [p.program for p in total_ordered]
+    total_y = [p.total_count for p in total_ordered]
+    men_ordered = sorted(sfu_programs, key=lambda p: p.men_count)
+    men_x = [p.program for p in men_ordered]
+    men_y = [p.men_count for p in men_ordered]
+    women_ordered = sorted(sfu_programs, key=lambda p: p.women_count)
+    women_x = [p.program for p in women_ordered]
+    women_y = [p.women_count for p in women_ordered]
+    return {
+        "total-count": Stat(
+            label="Total Count",
+            graph_title="Total Count by Program (2023/24)",
+            x_lbl=x_lbl,
+            x_values=total_x,
+            y_lbl=y_lbl,
+            y_values=total_y
+        ),
+        "men-count": Stat(
+            label="Men Count",
+            graph_title="Men Count by Program (2023/24)",
+            x_lbl=x_lbl,
+            x_values=men_x,
+            y_lbl=y_lbl,
+            y_values=men_y
+        ),
+        "women-count": Stat(
+            label="Women Count",
+            graph_title="Women Count by Program (2023/24)",
             x_lbl=x_lbl,
             x_values=women_x,
             y_lbl=y_lbl,
@@ -157,47 +245,57 @@ def get_sfu_program_headcounts() -> dict[str: Stat]:
 
 
 @functools.cache
-def get_all_stats() -> list[dict[str: Stat]]:  # TODO: Make it dict instead to group stats in main() easier
+def get_all_stats() -> dict[str: StatCategory]:
     """
-    Gets all the stats for the website
-    :return: a list of stat categories
+    Gets all the stats for the website.
+    :return: a dict of stat categories
     """
-    headcount_by_program_stats = get_sfu_program_headcounts()
-    headcount_by_age_stats = get_sfu_age_headcounts()
-    return [headcount_by_program_stats, headcount_by_age_stats]
+    return {
+        "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(get_sfu_programs())),
+        "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(get_sfu_programs())),
+        "age": StatCategory("Headcounts by age & work status", get_sfu_age_headcounts())
+    }
 
 
 @app.route("/")
 def main():
     """
-    Creates our index(initial) page. This page will contain the selections for what data to see, the selected data, and
-    all other navigation.
+    Creates our index page. This controls all the content shown in the site including the data selection options,
+    the selected data, and all other navigation.
     :return: the rendering string
     """
 
-    view = request.args.get("view")
+    category = request.args.get("category")
+    stat = request.args.get("view")
     graph_html = None
 
     all_stats = get_all_stats()
 
-    for stats in all_stats:
-        if view in stats:
-            stat = stats[view]
-            graph_html = stat.get_bar_graph()
+    for cat_slug, stat_cat in all_stats.items():
+        if category == cat_slug:
+            try:
+                gotten_stat = stat_cat.stat[stat]
+                graph_html = gotten_stat.get_bar_graph()
+            except KeyError:
+                print("Could not find view from the category:", category)
+            break
 
-    buttons = []
-    for stats in all_stats:
-        for slug, stat in stats.items():
-            buttons.append({
+    categories = {}
+    for cat_slug, stat_cat in all_stats.items():
+        categories[cat_slug] = {"title": stat_cat.title, "buttons": []}
+        for stat_slug, stat in stat_cat.stat.items():
+            categories[cat_slug]["buttons"].append({
                 "label": stat.label,
-                "query_url": f"/?view={slug}"
+                "query_url": f"/?category={cat_slug}&view={stat_slug}"
             })
 
+    buttons = []
     buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
-
-    return render_template("index.html", title="SFU Statistics Visualized", buttons=buttons, graph_html=graph_html)
+    return render_template("index.html", title="SFU Statistics Visualized", categories=categories, buttons=buttons,
+                           graph_html=graph_html)
 
 
 if __name__ == '__main__':
     app.run(debug=True, port=8000)  # Runs the flask site on local host port 8000 in debug mode.
+    # host='0.0.0.0' makes the server accessible from other devices on the same network
     # https://flask.palletsprojects.com/en/stable/quickstart/ to understand flask

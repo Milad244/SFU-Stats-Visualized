@@ -8,22 +8,37 @@
 <body>
     <h1>{{ title }}</h1>
 
-    <div>
-      {% for button in buttons %}
-        {% if button.query_url %}
-          <a href="{{ button.query_url }}">
-            <button type="button">{{ button.label }}</button>
-          </a>
-        {% elif button.external_url %}
-          <a href="{{ button.external_url }}" target="_blank">
-            <button type="button">{{ button.label }}</button>
-          </a>
-        {% endif %}
-      {% endfor %}
+    <div class="categories">
+        {% for key, value in categories.items() %}
+            <div>
+                <h2>{{value.title}}</h2>
+                {% for button in value.buttons %}
+                    <a href="{{ button.query_url }}">
+                        <button type="button">{{ button.label }}</button>
+                    </a>
+                {% endfor %}
+            </div>
+        {% endfor %}
     </div>
 
     {% if graph_html %}
-      <div>{{ graph_html | safe }}</div>
+        <div>{{ graph_html | safe }}</div>
     {% endif %}
+
+    <footer>
+        <div>
+        {% for button in buttons %}
+            {% if button.query_url %}
+                <a href="{{ button.query_url }}">
+                    <button type="button" class="footer-btn">{{ button.label }}</button>
+                </a>
+            {% elif button.external_url %}
+                <a href="{{ button.external_url }}" target="_blank">
+                    <button type="button" class="footer-btn">{{ button.label }}</button>
+                </a>
+            {% endif %}
+        {% endfor %}
+    </div>
+    </footer>
 </body>
 </html>
