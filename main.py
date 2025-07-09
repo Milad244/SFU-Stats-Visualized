@@ -61,7 +61,7 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
     :return: A Stat containing headcount by age
     """
 
-    stat_file = "data/headcount/ST20.db.xlsx"
+    stat_file = "data/headcount/age_distribution_ST20.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8, usecols="A:B")
 
     stat = Stat(
@@ -106,7 +106,7 @@ def get_sfu_programs() -> list[SFUProgram]:
     :return: A list of classes representing each program
     """
 
-    stat_file = "data/headcount/ST04.db.xlsx"
+    stat_file = "data/headcount/program_distribution_ST04.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table by gender", header=11, usecols="A:E")
 
     programs = []
