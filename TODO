@@ -3,6 +3,7 @@
 ## General
 - [x] Let user select what graph they want to see
 - [x] Get more statistics to do
+- [x] Add search feature for each graph
 - [ ] Make plotly graphs look better
 - [ ] Add more functionality to main page such as another useful feature or an about page
 - [x] Make entire website look better (html/css changes)
@@ -11,5 +12,5 @@
 - [x] Undergraduate count by program & faculty. Sorted by genders. From ST04.
 - [x] Age distribution (not doing by part/full time SFU student because seems excessive to me). From ST20.
 - [ ] Units enrolled distribution by season. From ST32.
-- [ ] New undergraduates by faculty, year level, and gender. Also, going to extrapolate their growth by year. From ST12.
+- [ ] New undergraduates by faculty. Also, going to extrapolate their growth from previous years. From ST12.
 - [ ] Outcomes by concentration (probably only doing most popular programs since so many). From Baccalaureate Reports.

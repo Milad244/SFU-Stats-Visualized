@@ -64,3 +64,16 @@ button:active {
   background-color: #4a003b;
   box-shadow: 0 2px 6px rgba(87, 0, 71, 0.6);
 }
+
+.graph-msg {
+    font-size: 1.5em;
+}
+
+input {
+    text-align: left;
+    font-size: 1em;
+}
+
+.submit{
+    cursor: pointer;
+}

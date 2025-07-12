@@ -22,7 +22,16 @@
     </div>
 
     {% if graph_html %}
-        <div>{{ graph_html | safe }}</div>
+        <div>
+            <form action="/">
+                <input type="hidden" name="category" value="{{ request.args.get("category") }}">
+                <input type="hidden" name="view" value="{{ request.args.get("view") }}">
+
+                <input type="text" name="keyword" placeholder="Search..." value="{{ request.args.get("keyword", "")}}">
+                <input class="submit" type="submit" value="Search">
+            </form>
+            {{ graph_html | safe }}
+        </div>
     {% endif %}
 
     <footer>

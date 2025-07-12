@@ -1,6 +1,3 @@
-from enum import Enum
-import matplotlib
-import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from flask import Flask, render_template, request
@@ -8,6 +5,7 @@ import plotly.express as px
 import functools
 
 app = Flask(__name__)
+app.jinja_env.add_extension('jinja2.ext.do')
 
 
 """Data from https://www.sfu.ca/irp/students.html"""
@@ -37,10 +35,23 @@ class Stat:
         self.y_values = y_values
 
     @functools.cache
-    def get_bar_graph(self) -> str:
+    def get_bar_graph(self, keyword: str=None) -> str:
+        if keyword is None:
+            x_values = self.x_values
+            y_values = self.y_values
+        else:
+            x_values = []
+            y_values = []
+            for i in range(len(self.x_values)):
+                if keyword.lower() in str(self.x_values[i]).lower():
+                    x_values.append(self.x_values[i])
+                    y_values.append(self.y_values[i])
+
+        if len(x_values) == 0:
+            return '<p class="graph-msg">No Data Found<p>'
         df = pd.DataFrame({
-            self.x_lbl: self.x_values,
-            self.y_lbl: self.y_values
+            self.x_lbl: x_values,
+            self.y_lbl: y_values
         })
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
         return fig.to_html(full_html=False)
@@ -253,7 +264,7 @@ def get_all_stats() -> dict[str: StatCategory]:
     return {
         "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(get_sfu_programs())),
         "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(get_sfu_programs())),
-        "age": StatCategory("Headcounts by age & work status", get_sfu_age_headcounts())
+        "age": StatCategory("Headcounts by age", get_sfu_age_headcounts())
     }
 
 
@@ -267,6 +278,7 @@ def main():
 
     category = request.args.get("category")
     stat = request.args.get("view")
+    keyword = request.args.get("keyword")
     graph_html = None
 
     all_stats = get_all_stats()
@@ -275,7 +287,7 @@ def main():
         if category == cat_slug:
             try:
                 gotten_stat = stat_cat.stat[stat]
-                graph_html = gotten_stat.get_bar_graph()
+                graph_html = gotten_stat.get_bar_graph(keyword)
             except KeyError:
                 print("Could not find view from the category:", category)
             break
