@@ -5,7 +5,6 @@ import plotly.express as px
 import functools
 
 app = Flask(__name__)
-app.jinja_env.add_extension('jinja2.ext.do')
 
 
 """Data from https://www.sfu.ca/irp/students.html"""
