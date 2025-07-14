@@ -27,10 +27,15 @@
                 <input type="hidden" name="category" value="{{ request.args.get("category") }}">
                 <input type="hidden" name="view" value="{{ request.args.get("view") }}">
 
-                <input type="text" name="keyword" placeholder="Search..." value="{{ request.args.get("keyword", "")}}">
+                <input type="text" name="keyword" placeholder="Search..." value="{{ request.args.get("keyword", "") }}">
                 <input class="submit" type="submit" value="Search">
             </form>
             {{ graph_html | safe }}
+            <div class="graph-features-container">
+                {% for feature, value in graph_features.items() %}
+                    <p>{{ feature }}: {{ value }}</p>
+                {% endfor %}
+            </div>
         </div>
     {% endif %}
 

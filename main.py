@@ -23,7 +23,7 @@ def nan_to_int(num: int) -> int:
 
 class Stat:
     """
-    Represents an (x,y) graph.
+    Represents an (x,y) graph. Do not use cache or keywords search won't work.
     """
     def __init__(self, label: str, graph_title: str, x_lbl: str, x_values: list, y_lbl: str, y_values: list):
         self.label = label
@@ -32,19 +32,38 @@ class Stat:
         self.x_values = x_values
         self.y_lbl = y_lbl
         self.y_values = y_values
+        self.keyword = None
 
-    @functools.cache
-    def get_bar_graph(self, keyword: str=None) -> str:
-        if keyword is None:
-            x_values = self.x_values
-            y_values = self.y_values
+    def set_keyword(self, keyword) -> None:
+        """
+        Sets the keyword for searching in x values.
+        :param keyword: the keyword
+        :return: None
+        """
+        self.keyword = keyword
+
+    def get_keyword_values(self) -> (list, list):
+        """
+        Gets the x (and corresponding y values) that are found within the keyword.
+        :return: a tuple with the first value as x-values and the second value as y-values
+        """
+        if self.keyword is None:
+            return self.x_values, self.y_values
         else:
             x_values = []
             y_values = []
             for i in range(len(self.x_values)):
-                if keyword.lower() in str(self.x_values[i]).lower():
+                if self.keyword.lower() in str(self.x_values[i]).lower():
                     x_values.append(self.x_values[i])
                     y_values.append(self.y_values[i])
+            return x_values, y_values
+
+    def get_bar_graph(self) -> str:
+        """
+        Creates a bar graph.
+        :return: The bar graph html
+        """
+        x_values, y_values = self.get_keyword_values()
 
         if len(x_values) == 0:
             return '<p class="graph-msg">No Data Found<p>'
@@ -54,6 +73,78 @@ class Stat:
         })
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
         return fig.to_html(full_html=False)
+
+    def get_total(self) -> float:
+        """
+        Gets the total of all y-values added up.
+        :return: the total
+        """
+        x_values, y_values = self.get_keyword_values()
+
+        total_values = 0
+        for value in y_values:
+            total_values += value
+
+        return total_values
+
+    def get_mean(self) -> float:
+        """
+        Gets the mean (average) of all y-values.
+        :return: the mean
+        """
+        x_values, y_values = self.get_keyword_values()
+
+        return self.get_total() / len(y_values)
+
+    def get_median_str(self) -> str:
+        """
+        Gets the median (middle) of all y-values.
+        If even number of y-values then gets the average of the two in the middle.
+        :return: the mean
+        """
+        x_values, y_values = self.get_keyword_values()
+
+        n = len(y_values)
+        if n % 2 == 1:
+            middle_n = n // 2  # Not adding 1 since index starts at 0
+            median_x = x_values[middle_n]
+            median_y = round(y_values[middle_n], 2)
+            return f"{median_x} - {median_y}"
+        else:
+            middle_n1, middle_n2 = int(n / 2 - 1), int(n / 2)  # -1 Since index starts at 0
+            median_x1, median_x2 = x_values[middle_n1], x_values[middle_n2]
+            median_y = (y_values[middle_n1] + y_values[middle_n2]) / 2
+            return f"{median_x1}, {median_x2} - {median_y}"
+
+    def get_mode_str(self) -> str:
+        """
+        Gets the mode (most common) of all y-values as a string of numbers in case more than 1 mode found.
+        :return: the mode
+        """
+        x_values, y_values = self.get_keyword_values()
+
+        value_to_indexes = {}
+        for i in range(len(y_values)):
+            value = y_values[i]
+            value_to_indexes.get(value, []).append(i)
+
+        mode_indexes = []
+        most_indexes = 0
+        for value, indexes in value_to_indexes.items():
+            if len(indexes) > most_indexes:
+                most_indexes = len(indexes)
+                mode_indexes = indexes
+            elif len(indexes) == most_indexes:
+                mode_indexes.extends(indexes)
+
+        if most_indexes == 0:
+            return "None"
+
+        string_builder = ""
+        for index in mode_indexes:
+            string_builder += x_values[index] + ", "
+
+        return string_builder + f"- {most_indexes}"
 
 
 class StatCategory:
@@ -96,6 +187,38 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
     return {"age-count": stat}
 
 
+def get_sfu_new_headcounts() -> dict[str: Stat]:
+    """
+    Gets the cleaned up new undergraduates distribution of SFU.
+    :return: A Stat containing new undergraduates headcount by faculty
+    """
+
+    stat_file = "data/headcount/new_undergrads_distribution_ST12.xlsx"
+    stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8)
+
+    stat = Stat(
+        label="New Undergraduates Distribution",
+        graph_title="New Undergraduates by Faculty (2024/25)",
+        x_lbl="Faculty",
+        x_values=[],
+        y_lbl="New Undergraduates Count",
+        y_values=[]
+    )
+
+    x_y_dict = {}
+    for i, s in stats.iterrows():
+        faculty = s["Faculty"]
+        count = s[" Grand Total"]
+
+        if faculty == "Unspecified":
+            break
+
+        x_y_dict[faculty] = count
+
+    stat.x_values, stat.y_values = get_ordered_x_y(x_y_dict)
+    return {"new-count": stat}
+
+
 class SFUProgram:
     """
     Represents an SFU program.
@@ -109,7 +232,6 @@ class SFUProgram:
         self.total_count = self.men_count + self.women_count + self.nr_count
 
 
-@functools.cache
 def get_sfu_programs() -> list[SFUProgram]:
     """
     Gets the cleaned up headcounts from 2023/24 for each SFU program.
@@ -260,10 +382,12 @@ def get_all_stats() -> dict[str: StatCategory]:
     Gets all the stats for the website.
     :return: a dict of stat categories
     """
+    sfu_programs = get_sfu_programs()
     return {
-        "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(get_sfu_programs())),
-        "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(get_sfu_programs())),
-        "age": StatCategory("Headcounts by age", get_sfu_age_headcounts())
+        "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(sfu_programs)),
+        "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(sfu_programs)),
+        "age": StatCategory("Headcounts by Age", get_sfu_age_headcounts()),
+        "new": StatCategory("New Undergraduates by Faculty", get_sfu_new_headcounts()),
     }
 
 
@@ -279,6 +403,7 @@ def main():
     stat = request.args.get("view")
     keyword = request.args.get("keyword")
     graph_html = None
+    graph_features = {}
 
     all_stats = get_all_stats()
 
@@ -286,7 +411,12 @@ def main():
         if category == cat_slug:
             try:
                 gotten_stat = stat_cat.stat[stat]
-                graph_html = gotten_stat.get_bar_graph(keyword)
+                gotten_stat.set_keyword(keyword)
+                graph_html = gotten_stat.get_bar_graph()
+                graph_features["Total"] = round(gotten_stat.get_total(), 2)
+                graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
+                graph_features["Median"] = gotten_stat.get_median_str()
+                graph_features["Mode"] = gotten_stat.get_mode_str()
             except KeyError:
                 print("Could not find view from the category:", category)
             break
@@ -303,7 +433,7 @@ def main():
     buttons = []
     buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
     return render_template("index.html", title="SFU Statistics Visualized", categories=categories, buttons=buttons,
-                           graph_html=graph_html)
+                           graph_html=graph_html, graph_features=graph_features)
 
 
 if __name__ == '__main__':
