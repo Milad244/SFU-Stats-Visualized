@@ -3,6 +3,7 @@ import numpy as np
 from flask import Flask, render_template, request
 import plotly.express as px
 import functools
+import pdfplumber
 
 app = Flask(__name__)
 
@@ -44,10 +45,12 @@ class Stat:
 
     def get_keyword_values(self) -> (list, list):
         """
-        Gets the x (and corresponding y values) that are found within the keyword.
+        Gets the x (and corresponding y values) that are found within the keyword. Returns none if no x-values.
         :return: a tuple with the first value as x-values and the second value as y-values
         """
         if self.keyword is None:
+            if len(self.x_values) == 0:
+                return None
             return self.x_values, self.y_values
         else:
             x_values = []
@@ -56,6 +59,8 @@ class Stat:
                 if self.keyword.lower() in str(self.x_values[i]).lower():
                     x_values.append(self.x_values[i])
                     y_values.append(self.y_values[i])
+            if len(x_values) == 0:
+                return None
             return x_values, y_values
 
     def get_bar_graph(self) -> str:
@@ -63,14 +68,17 @@ class Stat:
         Creates a bar graph.
         :return: The bar graph html
         """
+
+        if self.get_keyword_values() is None:
+            return '<p class="graph-msg">No Data Found<p>'
+
         x_values, y_values = self.get_keyword_values()
 
-        if len(x_values) == 0:
-            return '<p class="graph-msg">No Data Found<p>'
         df = pd.DataFrame({
             self.x_lbl: x_values,
             self.y_lbl: y_values
         })
+        # To do colors: https://www.geeksforgeeks.org/python/python-plotly-how-to-set-up-a-color-palette/
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
         return fig.to_html(full_html=False)
 
@@ -113,7 +121,7 @@ class Stat:
         else:
             middle_n1, middle_n2 = int(n / 2 - 1), int(n / 2)  # -1 Since index starts at 0
             median_x1, median_x2 = x_values[middle_n1], x_values[middle_n2]
-            median_y = (y_values[middle_n1] + y_values[middle_n2]) / 2
+            median_y = round((y_values[middle_n1] + y_values[middle_n2]) / 2, 2)
             return f"{median_x1}, {median_x2} - {median_y}"
 
     def get_mode_str(self) -> str:
@@ -217,6 +225,74 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
 
     stat.x_values, stat.y_values = get_ordered_x_y(x_y_dict)
     return {"new-count": stat}
+
+
+def get_sfu_units_taken() -> dict[str: Stat]:
+    """
+    Gets the units enrolled headcounts for each season.
+    :return: Stats of headcounts by units enrolled for the three different seasons
+    """
+    stat_file = "data/headcount/units_enrolled_distribution_ST32.pdf"
+
+    x_lbl = "Units"
+    y_lbl = "Count"
+    stats = {
+        "summer-units": Stat(
+            label="Summer Units",
+            graph_title="Units Taken Distribution (Summer 2024)",
+            x_lbl=x_lbl,
+            x_values=[],
+            y_lbl=y_lbl,
+            y_values=[]
+        ),
+        "fall-units": Stat(
+            label="Fall Units",
+            graph_title="Units Taken Distribution (Fall 2024)",
+            x_lbl=x_lbl,
+            x_values=[],
+            y_lbl=y_lbl,
+            y_values=[]
+        ),
+        "spring-units": Stat(
+            label="Spring Units",
+            graph_title="Units Taken Distribution (Spring 2025)",
+            x_lbl=x_lbl,
+            x_values=[],
+            y_lbl=y_lbl,
+            y_values=[]
+        )
+    }
+
+    with pdfplumber.open(stat_file) as pdf_stats:
+        for page in pdf_stats.pages:
+            for table in page.extract_tables():
+                row_count = 0
+                for row in table:
+                    seasons_row = []
+                    for i in range(5, len(row), 6):  # Gets only the 3 most recent season values for each row
+                        seasons_row.append(row[i])
+                    season_count = 0
+                    for season, stat in stats.items():
+                        if row_count == 20:
+                            stat.x_values.append("20+")
+                        elif row_count == 21:
+                            continue
+                        elif row_count == 22:
+                            stat.x_values.append("Total Students")
+                        else:
+                            stat.x_values.append(row_count)
+
+                        stat.y_values.append(float(seasons_row[season_count].replace(",", "")))
+                        season_count += 1
+                    row_count += 1
+
+    # Converting percent values of total students to student count
+    for season, stat in stats.items():
+        for i in range(len(stat.y_values)):
+            stat.y_values[i] *= 1/100 * stat.y_values[-1]
+        stat.x_values.pop(-1)
+        stat.y_values.pop(-1)
+    return stats
 
 
 class SFUProgram:
@@ -387,7 +463,8 @@ def get_all_stats() -> dict[str: StatCategory]:
         "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(sfu_programs)),
         "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(sfu_programs)),
         "age": StatCategory("Headcounts by Age", get_sfu_age_headcounts()),
-        "new": StatCategory("New Undergraduates by Faculty", get_sfu_new_headcounts()),
+        "new": StatCategory("New Headcounts by Faculty", get_sfu_new_headcounts()),
+        "units": StatCategory("Units Enrolled by Season", get_sfu_units_taken()),
     }
 
 
@@ -413,10 +490,11 @@ def main():
                 gotten_stat = stat_cat.stat[stat]
                 gotten_stat.set_keyword(keyword)
                 graph_html = gotten_stat.get_bar_graph()
-                graph_features["Total"] = round(gotten_stat.get_total(), 2)
-                graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
-                graph_features["Median"] = gotten_stat.get_median_str()
-                graph_features["Mode"] = gotten_stat.get_mode_str()
+                if gotten_stat.get_keyword_values():
+                    graph_features["Total"] = round(gotten_stat.get_total(), 2)
+                    graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
+                    graph_features["Median"] = gotten_stat.get_median_str()
+                    graph_features["Mode"] = gotten_stat.get_mode_str()
             except KeyError:
                 print("Could not find view from the category:", category)
             break
@@ -432,8 +510,8 @@ def main():
 
     buttons = []
     buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
-    return render_template("index.html", title="SFU Statistics Visualized", categories=categories, buttons=buttons,
-                           graph_html=graph_html, graph_features=graph_features)
+    return render_template("index.html", title="SFU Undergraduate Statistics Visualized", categories=categories,
+                           buttons=buttons, graph_html=graph_html, graph_features=graph_features)
 
 
 if __name__ == '__main__':

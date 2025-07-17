@@ -93,7 +93,6 @@ input:focus {
 
 .graph-features-container {
     padding: 0px;
-
 }
 
 .graph-features-container p{
@@ -103,4 +102,11 @@ input:focus {
     font-weight: bold;
     color: #01558a;
     margin: 0px;
+}
+
+.graph-container {
+    overflow-x: hidden;
+}
+.js-plotly-plot .plotly .ease-bg {
+    right: 50px !important;
 }

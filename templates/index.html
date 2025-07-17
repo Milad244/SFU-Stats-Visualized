@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SFU Stats Visualized</title>
+    <title>SFU Undergraduate Stats Visualized</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -30,7 +30,7 @@
                 <input type="text" name="keyword" placeholder="Search..." value="{{ request.args.get("keyword", "") }}">
                 <input class="submit" type="submit" value="Search">
             </form>
-            {{ graph_html | safe }}
+            <div class="graph-container">{{ graph_html | safe }}</div>
             <div class="graph-features-container">
                 {% for feature, value in graph_features.items() %}
                     <p>{{ feature }}: {{ value }}</p>
