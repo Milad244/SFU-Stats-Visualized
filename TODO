@@ -7,8 +7,9 @@
 - [x] Add total, mean, median, mode for each graph
 - [x] Add percent of total on hover
 - [x] Make plotly graphs look better
-- [ ] Remove DS Store file
-- [ ] Add grouped bars for the total graphs
+- [x] Remove DS Store file
+- [ ] Add grouped bars for the total graphs or make the extra info appear on hover
+- [ ] Make getting data into separate py file and store it for data persistence.
 - [x] Make entire website look better (html/css changes)
 
 ## Stats

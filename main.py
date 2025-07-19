@@ -23,7 +23,7 @@ def nan_to_int(num: int) -> int:
 
 class Stat:
     """
-    Represents an (x,y) graph. Do not use cache or keywords search won't work.
+    Represents a dataframe. Do not use cache or keywords search won't work.
     """
 
     def __init__(self, label: str, graph_title: str, df: pd.DataFrame, x_lbl: str, y_lbl: str):
@@ -43,6 +43,10 @@ class Stat:
         self.keyword = keyword
 
     def get_filtered_df(self) -> pd.DataFrame:
+        """
+        Gets the filtered data frame based on the case-insensitive keyword in x-values.
+        :return: the filtered data frame
+        """
         if self.keyword is None:
             return self.df
         return self.df[self.df.apply(lambda row: self.keyword.lower() in str(row[self.x_lbl]).lower(), axis=1)]
@@ -52,7 +56,6 @@ class Stat:
         Creates a bar graph.
         :return: The bar graph html
         """
-        # To do colors: https://www.geeksforgeeks.org/python/python-plotly-how-to-set-up-a-color-palette/
         df = self.get_filtered_df()
 
         if df.empty:
@@ -71,6 +74,10 @@ class Stat:
                     "Percent: %{customdata[0]}%"
             ),
             customdata=df[['percentage']].values
+        )
+
+        fig.update_layout(
+            paper_bgcolor='rgb(245, 245, 245)',
         )
 
         return fig.to_html(full_html=False)
@@ -509,8 +516,7 @@ def main():
                 "query_url": f"/?category={cat_slug}&view={stat_slug}"
             })
 
-    buttons = []
-    buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
+    buttons = [{"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"}]
     return render_template("index.html", title="SFU Undergraduate Statistics Visualized", categories=categories,
                            buttons=buttons, graph_html=graph_html, graph_features=graph_features)
 
