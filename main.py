@@ -7,7 +7,6 @@ import pdfplumber
 
 app = Flask(__name__)
 
-
 """Data from https://www.sfu.ca/irp/students.html"""
 
 
@@ -24,62 +23,63 @@ def nan_to_int(num: int) -> int:
 
 class Stat:
     """
-    Represents an (x,y) graph. Do not use cache or keywords search won't work.
+    Represents a dataframe. Do not use cache or keywords search won't work.
     """
-    def __init__(self, label: str, graph_title: str, x_lbl: str, x_values: list, y_lbl: str, y_values: list):
+
+    def __init__(self, label: str, graph_title: str, df: pd.DataFrame, x_lbl: str, y_lbl: str):
         self.label = label
         self.graph_title = graph_title
+        self.df = df
         self.x_lbl = x_lbl
-        self.x_values = x_values
         self.y_lbl = y_lbl
-        self.y_values = y_values
         self.keyword = None
 
     def set_keyword(self, keyword) -> None:
         """
-        Sets the keyword for searching in x values.
+        Sets the keyword for searching in dataframe.
         :param keyword: the keyword
         :return: None
         """
         self.keyword = keyword
 
-    def get_keyword_values(self) -> (list, list):
+    def get_filtered_df(self) -> pd.DataFrame:
         """
-        Gets the x (and corresponding y values) that are found within the keyword. Returns none if no x-values.
-        :return: a tuple with the first value as x-values and the second value as y-values
+        Gets the filtered data frame based on the case-insensitive keyword in x-values.
+        :return: the filtered data frame
         """
         if self.keyword is None:
-            if len(self.x_values) == 0:
-                return None
-            return self.x_values, self.y_values
-        else:
-            x_values = []
-            y_values = []
-            for i in range(len(self.x_values)):
-                if self.keyword.lower() in str(self.x_values[i]).lower():
-                    x_values.append(self.x_values[i])
-                    y_values.append(self.y_values[i])
-            if len(x_values) == 0:
-                return None
-            return x_values, y_values
+            return self.df
+        return self.df[self.df.apply(lambda row: self.keyword.lower() in str(row[self.x_lbl]).lower(), axis=1)]
 
     def get_bar_graph(self) -> str:
         """
         Creates a bar graph.
         :return: The bar graph html
         """
+        df = self.get_filtered_df()
 
-        if self.get_keyword_values() is None:
+        if df.empty:
             return '<p class="graph-msg">No Data Found<p>'
 
-        x_values, y_values = self.get_keyword_values()
+        y_total = df[self.y_lbl].sum()
+        df['percentage'] = (df[self.y_lbl] / y_total * 100).round(2)
 
-        df = pd.DataFrame({
-            self.x_lbl: x_values,
-            self.y_lbl: y_values
-        })
-        # To do colors: https://www.geeksforgeeks.org/python/python-plotly-how-to-set-up-a-color-palette/
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
+
+        fig.update_traces(
+            marker_color='rgb(179, 0, 0)',
+            hovertemplate=(
+                    f"{self.x_lbl}: %{{x}}<br>" +
+                    f"{self.y_lbl}: %{{y}}<br>" +
+                    "Percent: %{customdata[0]}%"
+            ),
+            customdata=df[['percentage']].values
+        )
+
+        fig.update_layout(
+            paper_bgcolor='rgb(245, 245, 245)',
+        )
+
         return fig.to_html(full_html=False)
 
     def get_total(self) -> float:
@@ -87,78 +87,40 @@ class Stat:
         Gets the total of all y-values added up.
         :return: the total
         """
-        x_values, y_values = self.get_keyword_values()
-
-        total_values = 0
-        for value in y_values:
-            total_values += value
-
-        return total_values
+        return self.get_filtered_df()[self.y_lbl].sum()
 
     def get_mean(self) -> float:
         """
         Gets the mean (average) of all y-values.
         :return: the mean
         """
-        x_values, y_values = self.get_keyword_values()
+        return self.get_filtered_df()[self.y_lbl].mean()
 
-        return self.get_total() / len(y_values)
-
-    def get_median_str(self) -> str:
+    def get_median(self) -> float:
         """
-        Gets the median (middle) of all y-values.
+        Gets the median (middle) of all y-values in order.
         If even number of y-values then gets the average of the two in the middle.
-        :return: the mean
+        :return: the median
         """
-        x_values, y_values = self.get_keyword_values()
-
-        n = len(y_values)
-        if n % 2 == 1:
-            middle_n = n // 2  # Not adding 1 since index starts at 0
-            median_x = x_values[middle_n]
-            median_y = round(y_values[middle_n], 2)
-            return f"{median_x} - {median_y}"
-        else:
-            middle_n1, middle_n2 = int(n / 2 - 1), int(n / 2)  # -1 Since index starts at 0
-            median_x1, median_x2 = x_values[middle_n1], x_values[middle_n2]
-            median_y = round((y_values[middle_n1] + y_values[middle_n2]) / 2, 2)
-            return f"{median_x1}, {median_x2} - {median_y}"
+        return self.get_filtered_df()[self.y_lbl].median()
 
     def get_mode_str(self) -> str:
         """
         Gets the mode (most common) of all y-values as a string of numbers in case more than 1 mode found.
         :return: the mode
         """
-        x_values, y_values = self.get_keyword_values()
-
-        value_to_indexes = {}
-        for i in range(len(y_values)):
-            value = y_values[i]
-            value_to_indexes.get(value, []).append(i)
-
-        mode_indexes = []
-        most_indexes = 0
-        for value, indexes in value_to_indexes.items():
-            if len(indexes) > most_indexes:
-                most_indexes = len(indexes)
-                mode_indexes = indexes
-            elif len(indexes) == most_indexes:
-                mode_indexes.extends(indexes)
-
-        if most_indexes == 0:
+        df = self.get_filtered_df()
+        mode_values = df[self.y_lbl].mode().tolist()
+        if not mode_values or len(mode_values) == len(df):
             return "None"
-
-        string_builder = ""
-        for index in mode_indexes:
-            string_builder += x_values[index] + ", "
-
-        return string_builder + f"- {most_indexes}"
+        return ', '.join([f"{v:.2f}" for v in mode_values])
 
 
 class StatCategory:
     """
     Represents a category of stats.
     """
+
     def __init__(self, title: str, stat: Stat):
         self.title = title
         self.stat = stat
@@ -173,24 +135,33 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
     stat_file = "data/headcount/age_distribution_ST20.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8, usecols="A:B")
 
-    stat = Stat(
-            label="Age Distribution",
-            graph_title="Total Count by Age (FALL 2023)",
-            x_lbl="Age",
-            x_values=[],
-            y_lbl="Count",
-            y_values=[]
-        )
+    x_lbl = "Age"
+    y_lbl = "Count"
+    x_values = []
+    y_values = []
 
-    for i, s in stats.iterrows():
-        age = s["Age"]
-        count = nan_to_int(s[2023])
+    for i, row in stats.iterrows():
+        age = row["Age"]
+        count = nan_to_int(row[2023])
 
         if age > 90:
             break
 
-        stat.x_values.append(age)
-        stat.y_values.append(count)
+        x_values.append(age)
+        y_values.append(count)
+
+    df = pd.DataFrame({
+        x_lbl: x_values,
+        y_lbl: y_values
+    })
+
+    stat = Stat(
+        label="Age Distribution",
+        graph_title="Total Count by Age (FALL 2023)",
+        df=df,
+        x_lbl=x_lbl,
+        y_lbl=y_lbl
+    )
 
     return {"age-count": stat}
 
@@ -204,26 +175,33 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
     stat_file = "data/headcount/new_undergrads_distribution_ST12.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8)
 
-    stat = Stat(
-        label="New Undergraduates Distribution",
-        graph_title="New Undergraduates by Faculty (2024/25)",
-        x_lbl="Faculty",
-        x_values=[],
-        y_lbl="New Undergraduates Count",
-        y_values=[]
-    )
-
+    x_lbl = "Faculty"
+    y_lbl = "New Undergraduates Count"
     x_y_dict = {}
-    for i, s in stats.iterrows():
-        faculty = s["Faculty"]
-        count = s[" Grand Total"]
+
+    for i, row in stats.iterrows():
+        faculty = row["Faculty"]
+        count = row[" Grand Total"]  # Header in Excel file has a space in front.
 
         if faculty == "Unspecified":
             break
 
         x_y_dict[faculty] = count
 
-    stat.x_values, stat.y_values = get_ordered_x_y(x_y_dict)
+    x_values, y_values = get_ordered_x_y(x_y_dict)
+    df = pd.DataFrame({
+        x_lbl: x_values,
+        y_lbl: y_values
+    })
+
+    stat = Stat(
+        label="New Undergraduates Distribution",
+        graph_title="New Undergraduates by Faculty (2024/25)",
+        df=df,
+        x_lbl=x_lbl,
+        y_lbl=y_lbl,
+    )
+
     return {"new-count": stat}
 
 
@@ -236,31 +214,11 @@ def get_sfu_units_taken() -> dict[str: Stat]:
 
     x_lbl = "Units"
     y_lbl = "Count"
-    stats = {
-        "summer-units": Stat(
-            label="Summer Units",
-            graph_title="Units Taken Distribution (Summer 2024)",
-            x_lbl=x_lbl,
-            x_values=[],
-            y_lbl=y_lbl,
-            y_values=[]
-        ),
-        "fall-units": Stat(
-            label="Fall Units",
-            graph_title="Units Taken Distribution (Fall 2024)",
-            x_lbl=x_lbl,
-            x_values=[],
-            y_lbl=y_lbl,
-            y_values=[]
-        ),
-        "spring-units": Stat(
-            label="Spring Units",
-            graph_title="Units Taken Distribution (Spring 2025)",
-            x_lbl=x_lbl,
-            x_values=[],
-            y_lbl=y_lbl,
-            y_values=[]
-        )
+    x_values = []
+    seasonal_y_values = {
+        "summer-units": [],
+        "fall-units": [],
+        "spring-units": []
     }
 
     with pdfplumber.open(stat_file) as pdf_stats:
@@ -272,26 +230,62 @@ def get_sfu_units_taken() -> dict[str: Stat]:
                     for i in range(5, len(row), 6):  # Gets only the 3 most recent season values for each row
                         seasons_row.append(row[i])
                     season_count = 0
-                    for season, stat in stats.items():
-                        if row_count == 20:
-                            stat.x_values.append("20+")
-                        elif row_count == 21:
+                    for season, y_values in seasonal_y_values.items():
+                        if row_count == 21:
                             continue
-                        elif row_count == 22:
-                            stat.x_values.append("Total Students")
-                        else:
-                            stat.x_values.append(row_count)
+                        if season == "summer-units":  # Only adding x-values once
+                            if row_count == 20:
+                                x_values.append("20+")
+                            elif row_count == 22:
+                                x_values.append("Total Students")
+                            else:
+                                x_values.append(str(row_count))
 
-                        stat.y_values.append(float(seasons_row[season_count].replace(",", "")))
+                        y_values.append(float(seasons_row[season_count].replace(",", "")))
                         season_count += 1
                     row_count += 1
 
     # Converting percent values of total students to student count
-    for season, stat in stats.items():
-        for i in range(len(stat.y_values)):
-            stat.y_values[i] *= 1/100 * stat.y_values[-1]
-        stat.x_values.pop(-1)
-        stat.y_values.pop(-1)
+    for season, y_values in seasonal_y_values.items():
+        for i in range(len(y_values)):
+            y_values[i] *= 1 / 100 * y_values[-1]
+        y_values.pop(-1)
+
+    x_values.pop(-1)  # Only removing last x-value once
+
+    stats = {
+        "summer-units": Stat(
+            label="Summer Units",
+            graph_title="Units Taken Distribution (Summer 2024)",
+            df=pd.DataFrame({
+                x_lbl: x_values,
+                y_lbl: seasonal_y_values["summer-units"]
+            }),
+            x_lbl=x_lbl,
+            y_lbl=y_lbl,
+        ),
+        "fall-units": Stat(
+            label="Fall Units",
+            graph_title="Units Taken Distribution (Fall 2024)",
+            df=pd.DataFrame({
+                x_lbl: x_values,
+                y_lbl: seasonal_y_values["fall-units"]
+            }),
+            x_lbl=x_lbl,
+            y_lbl=y_lbl,
+        ),
+        "spring-units": Stat(
+            label="Spring Units",
+            graph_title="Units Taken Distribution (Spring 2025)",
+            df=pd.DataFrame({
+                x_lbl: x_values,
+                y_lbl: seasonal_y_values["spring-units"]
+            }),
+            x_lbl=x_lbl,
+            y_lbl=y_lbl,
+        )
+    }
+
     return stats
 
 
@@ -299,6 +293,7 @@ class SFUProgram:
     """
     Represents an SFU program.
     """
+
     def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
         self.faculty = faculty
         self.program = program
@@ -319,19 +314,19 @@ def get_sfu_programs() -> list[SFUProgram]:
 
     programs = []
     last_faculty = ""
-    for i, s in stats.iterrows():
-        if pd.isna(s["Program"]):
+    for i, row in stats.iterrows():
+        if pd.isna(row["Program"]):
             continue
 
-        if pd.isna(s["Faculty"]):
-            s["Faculty"] = last_faculty
+        if pd.isna(row["Faculty"]):
+            row["Faculty"] = last_faculty
         else:
-            last_faculty = s["Faculty"]
+            last_faculty = row["Faculty"]
 
-        if pd.isna(s["Men"]) and pd.isna(s["Women"]) and pd.isna(s["Not reported"]):
+        if pd.isna(row["Men"]) and pd.isna(row["Women"]) and pd.isna(row["Not reported"]):
             continue  # This needs to be after Faculty check to avoid wrong faculties in future
 
-        programs.append(SFUProgram(s["Faculty"], s["Program"], s["Men"], s["Women"], s["Not reported"]))
+        programs.append(SFUProgram(row["Faculty"], row["Program"], row["Men"], row["Women"], row["Not reported"]))
 
     return programs
 
@@ -379,30 +374,37 @@ def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
     total_x, total_y = get_ordered_x_y(total_fac)
     men_x, men_y = get_ordered_x_y(men_fac)
     women_x, women_y = get_ordered_x_y(women_fac)
+
     return {
         "total-count": Stat(
             label="Total Count",
             graph_title="Total Count by Faculty (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: total_x,
+                y_lbl: total_y
+            }),
             x_lbl=x_lbl,
-            x_values=total_x,
             y_lbl=y_lbl,
-            y_values=total_y
         ),
         "men-count": Stat(
             label="Men Count",
             graph_title="Men Count by Faculty (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: men_x,
+                y_lbl: men_y
+            }),
             x_lbl=x_lbl,
-            x_values=men_x,
             y_lbl=y_lbl,
-            y_values=men_y
         ),
         "women-count": Stat(
             label="Women Count",
             graph_title="Women Count by Faculty (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: women_x,
+                y_lbl: women_y
+            }),
             x_lbl=x_lbl,
-            x_values=women_x,
             y_lbl=y_lbl,
-            y_values=women_y
         )
     }
 
@@ -428,26 +430,32 @@ def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
         "total-count": Stat(
             label="Total Count",
             graph_title="Total Count by Program (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: total_x,
+                y_lbl: total_y
+            }),
             x_lbl=x_lbl,
-            x_values=total_x,
             y_lbl=y_lbl,
-            y_values=total_y
         ),
         "men-count": Stat(
             label="Men Count",
             graph_title="Men Count by Program (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: men_x,
+                y_lbl: men_y
+            }),
             x_lbl=x_lbl,
-            x_values=men_x,
             y_lbl=y_lbl,
-            y_values=men_y
         ),
         "women-count": Stat(
             label="Women Count",
             graph_title="Women Count by Program (2023/24)",
+            df=pd.DataFrame({
+                x_lbl: women_x,
+                y_lbl: women_y
+            }),
             x_lbl=x_lbl,
-            x_values=women_x,
             y_lbl=y_lbl,
-            y_values=women_y
         )
     }
 
@@ -490,10 +498,10 @@ def main():
                 gotten_stat = stat_cat.stat[stat]
                 gotten_stat.set_keyword(keyword)
                 graph_html = gotten_stat.get_bar_graph()
-                if gotten_stat.get_keyword_values():
+                if not gotten_stat.get_filtered_df().empty:
                     graph_features["Total"] = round(gotten_stat.get_total(), 2)
                     graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
-                    graph_features["Median"] = gotten_stat.get_median_str()
+                    graph_features["Median"] = round(gotten_stat.get_median(), 2)
                     graph_features["Mode"] = gotten_stat.get_mode_str()
             except KeyError:
                 print("Could not find view from the category:", category)
@@ -508,8 +516,7 @@ def main():
                 "query_url": f"/?category={cat_slug}&view={stat_slug}"
             })
 
-    buttons = []
-    buttons.append({"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"})
+    buttons = [{"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"}]
     return render_template("index.html", title="SFU Undergraduate Statistics Visualized", categories=categories,
                            buttons=buttons, graph_html=graph_html, graph_features=graph_features)
 

@@ -5,9 +5,11 @@
 - [x] Get more statistics to do
 - [x] Add search feature for each graph
 - [x] Add total, mean, median, mode for each graph
-- [ ] Add percent of total on hover
-- [ ] Make plotly graphs look better
-- [ ] Add more functionality to main page such as another useful feature or an about page
+- [x] Add percent of total on hover
+- [x] Make plotly graphs look better
+- [x] Remove DS Store file
+- [ ] Add grouped bars for the total graphs or make the extra info appear on hover
+- [ ] Make getting data into separate py file and store it for data persistence.
 - [x] Make entire website look better (html/css changes)
 
 ## Stats
