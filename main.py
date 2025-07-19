@@ -52,14 +52,27 @@ class Stat:
         Creates a bar graph.
         :return: The bar graph html
         """
-
+        # To do colors: https://www.geeksforgeeks.org/python/python-plotly-how-to-set-up-a-color-palette/
         df = self.get_filtered_df()
 
         if df.empty:
             return '<p class="graph-msg">No Data Found<p>'
 
-        # To do colors: https://www.geeksforgeeks.org/python/python-plotly-how-to-set-up-a-color-palette/
+        y_total = df[self.y_lbl].sum()
+        df['percentage'] = (df[self.y_lbl] / y_total * 100).round(2)
+
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
+
+        fig.update_traces(
+            marker_color='rgb(179, 0, 0)',
+            hovertemplate=(
+                    f"{self.x_lbl}: %{{x}}<br>" +
+                    f"{self.y_lbl}: %{{y}}<br>" +
+                    "Percent: %{customdata[0]}%"
+            ),
+            customdata=df[['percentage']].values
+        )
+
         return fig.to_html(full_html=False)
 
     def get_total(self) -> float:
@@ -76,29 +89,13 @@ class Stat:
         """
         return self.get_filtered_df()[self.y_lbl].mean()
 
-    def get_median_str(self) -> str:
+    def get_median(self) -> float:
         """
-        Gets the median (middle) of all y-values.
+        Gets the median (middle) of all y-values in order.
         If even number of y-values then gets the average of the two in the middle.
-        :return: the mean
+        :return: the median
         """
-        df = self.get_filtered_df()
-        median_value = round(df[self.y_lbl].median(), 2)
-
-        x_series = df[self.x_lbl]
-        n = len(df)
-
-        if n == 0:
-            return "None"
-
-        if n % 2 == 1:
-            middle_n = n // 2  # Not adding 1 since index starts at 0
-            median_x = x_series.iloc[middle_n]
-            return f"{median_x} - {median_value:.2f}"
-        else:
-            middle_n1, middle_n2 = int(n / 2 - 1), int(n / 2)  # -1 Since index starts at 0
-            median_x1, median_x2 = x_series.iloc[middle_n1], x_series.iloc[middle_n2]
-            return f"{median_x1}, {median_x2} - {median_value:.2f}"
+        return self.get_filtered_df()[self.y_lbl].median()
 
     def get_mode_str(self) -> str:
         """
@@ -116,6 +113,7 @@ class StatCategory:
     """
     Represents a category of stats.
     """
+
     def __init__(self, title: str, stat: Stat):
         self.title = title
         self.stat = stat
@@ -288,6 +286,7 @@ class SFUProgram:
     """
     Represents an SFU program.
     """
+
     def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
         self.faculty = faculty
         self.program = program
@@ -495,7 +494,7 @@ def main():
                 if not gotten_stat.get_filtered_df().empty:
                     graph_features["Total"] = round(gotten_stat.get_total(), 2)
                     graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
-                    graph_features["Median"] = gotten_stat.get_median_str()
+                    graph_features["Median"] = round(gotten_stat.get_median(), 2)
                     graph_features["Mode"] = gotten_stat.get_mode_str()
             except KeyError:
                 print("Could not find view from the category:", category)

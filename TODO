@@ -5,10 +5,10 @@
 - [x] Get more statistics to do
 - [x] Add search feature for each graph
 - [x] Add total, mean, median, mode for each graph
-- [ ] Add percent of total on hover
-- [ ] Make plotly graphs look better
-- [ ] Add more functionality to main page such as another useful feature or an about page
+- [x] Add percent of total on hover
+- [x] Make plotly graphs look better
 - [ ] Remove DS Store file
+- [ ] Add grouped bars for the total graphs
 - [x] Make entire website look better (html/css changes)
 
 ## Stats
