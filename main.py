@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import numpy as np
 from flask import Flask, render_template, request
@@ -19,6 +21,30 @@ def nan_to_int(num: int) -> int:
     if pd.isna(num):
         return 0
     return num
+
+
+def get_ordered_x_y(count_dict: dict[str: int]) -> (list, list):
+    """
+    Turns a dictionary into two lists that are in the same order.
+    :param count_dict: the dictionary to convert into two lists
+    :return: a tuple with the first value as x-values and the second value as y-values
+    """
+    ordered_x = []
+    ordered_y = []
+    for key, value in count_dict.items():
+        ordered_x.append(key)
+        ordered_y.append(value)
+
+    n = len(ordered_y)
+    for i in range(n):
+        smallest_index = i
+        for j in range(i + 1, n):
+            if ordered_y[j] < ordered_y[smallest_index]:
+                smallest_index = j
+        ordered_y[i], ordered_y[smallest_index] = ordered_y[smallest_index], ordered_y[i]
+        ordered_x[i], ordered_x[smallest_index] = ordered_x[smallest_index], ordered_x[i]
+
+    return ordered_x, ordered_y
 
 
 class Stat:
@@ -289,6 +315,168 @@ def get_sfu_units_taken() -> dict[str: Stat]:
     return stats
 
 
+class SFUOutcome:
+    """Represents an SFU concentration outcome"""
+
+    # Source:
+    def __init__(self):
+        # Page 1
+        self.concentration = None
+        # Page 2
+        self.satisfaction = None
+        self.usefulness = None
+        self.regret = None
+        # Page 4
+        self.employment_rate = None
+        self.job_relation = None
+        self.income = None
+
+
+def get_sfu_outcomes() -> dict[str: Stat]:
+    # Get list of get_outcome results then parse into Str-Stat dict
+    outcome_dir = "data/outcome_BaccalaureateReports"
+    outcome_paths = os.listdir(outcome_dir)
+    outcomes = []
+    for outcome_path in outcome_paths:
+        outcomes.append(get_outcome(os.path.join(outcome_dir, outcome_path)))
+
+    for outcome in outcomes:
+        print(outcome.__dict__)
+
+    return {
+        "": Stat(
+            label="",
+            graph_title="",
+            df=pd.DataFrame(),
+            x_lbl="",
+            y_lbl="",
+        )
+    }
+
+
+def get_outcome(outcome_path: str) -> SFUOutcome:
+    outcome = SFUOutcome()
+    found = set()
+
+    with pdfplumber.open(outcome_path) as pdf_stats:
+        for page in pdf_stats.pages:
+            text = page.extract_text()
+
+            if "B.C. Baccalaureate Outcomes" in text and "B.C. Baccalaureate Outcomes" not in found:
+                outcome.concentration = get_concentration(page)
+                found.add("B.C. Baccalaureate Outcomes")
+
+            if "Program Satisfaction" in text and "Program Satisfaction" not in found:
+                # Could alter these groups if not all on same page in other outcomes.
+                outcome.satisfaction = get_satisfaction(page)
+                outcome.usefulness = get_usefulness(page)
+                outcome.regret = get_regret(page)
+                found.add("Program Satisfaction")
+
+            if "Employment" in text and "Employment" not in found:
+                # Could alter these groups if not all on same page in other outcomes.
+                outcome.employment_rate = get_employment_rate(page)
+                outcome.job_relation = get_job_relation(page)
+                outcome.income = get_income(page)
+                found.add("Employment")
+
+    return outcome
+
+
+def search_list(lst: list, keyword) -> int:
+    for i in range(len(lst)):
+        if keyword == lst[i]:
+            return i
+    return -1
+
+
+def get_between_table(page, x_index, y_index, prev_value, row_count: int, buffer: int = 0) -> [list, list]:
+    x_values = []
+    y_values = []
+    for table in page.extract_tables():
+        started = False
+        for row in table:
+            if row_count <= 0:
+                break
+            if started:
+                if buffer > 0:
+                    buffer -= 1
+                else:
+                    x_values.append(row[x_index])
+                    y_values.append(row[y_index])
+                    row_count -= 1
+            if prev_value in row:
+                started = True
+    return x_values, y_values
+
+
+def get_concentration(page) -> str:
+    lines = page.extract_text().split("\n")
+    prev_line = search_list(lines, "Simon Fraser University")
+    concentration_line = lines[prev_line + 1]
+    # The following strips `14.0101: Engineering, general` into `Engineering`
+    return concentration_line[concentration_line.find(": ") + 2:].replace(", general", "")
+
+
+def get_satisfaction(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 2, "Program Satisfaction:", 4)
+
+    return pd.DataFrame({
+        "Satisfaction Level": x_values,
+        "Percentage": y_values
+    })
+
+
+def get_usefulness(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 2, "Usefulness of Knowledge, Skills, and Abilities\nAcquired "
+                                                       "during Program in Work:", 4)
+
+    return pd.DataFrame({
+        "Usefulness Level": x_values,
+        "Percentage": y_values
+    })
+
+
+def get_regret(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 2, "Would select the same program again:", 2)
+
+    return pd.DataFrame({
+        "Would Select the Same Program Again": x_values,
+        "Percentage": y_values
+    })
+
+
+def get_employment_rate(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 2, "Employment:", 2)
+
+    return pd.DataFrame({
+        "Employment Status": x_values,
+        "Percentage": y_values
+    })
+
+
+def get_job_relation(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 2, "How related is your main job to your program?", 4)
+
+    return pd.DataFrame({
+        "Job Relation": x_values,
+        "Percentage": y_values
+    })
+
+
+def get_income(page) -> pd.DataFrame:
+    x_values, y_values = get_between_table(page, 0, 1, "$100,000 and Above", 2, 1)
+
+    for i in range(len(x_values)):
+        x_values[i] = x_values[i].split(" (full−time) ($)")[0]
+        y_values[i] = float(y_values[i].replace(",", ""))
+
+    return pd.DataFrame({
+        "Income": x_values,
+        "Amount": y_values
+    })
+
+
 class SFUProgram:
     """
     Represents an SFU program.
@@ -329,30 +517,6 @@ def get_sfu_programs() -> list[SFUProgram]:
         programs.append(SFUProgram(row["Faculty"], row["Program"], row["Men"], row["Women"], row["Not reported"]))
 
     return programs
-
-
-def get_ordered_x_y(count_dict: dict[str: int]) -> (list, list):
-    """
-    Turns a dictionary into two lists that are in the same order.
-    :param count_dict: the dictionary to convert into two lists
-    :return: a tuple with the first value as x-values and the second value as y-values
-    """
-    ordered_x = []
-    ordered_y = []
-    for key, value in count_dict.items():
-        ordered_x.append(key)
-        ordered_y.append(value)
-
-    n = len(ordered_y)
-    for i in range(n):
-        smallest_index = i
-        for j in range(i + 1, n):
-            if ordered_y[j] < ordered_y[smallest_index]:
-                smallest_index = j
-        ordered_y[i], ordered_y[smallest_index] = ordered_y[smallest_index], ordered_y[i]
-        ordered_x[i], ordered_x[smallest_index] = ordered_x[smallest_index], ordered_x[i]
-
-    return ordered_x, ordered_y
 
 
 def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat]:
@@ -473,6 +637,7 @@ def get_all_stats() -> dict[str: StatCategory]:
         "age": StatCategory("Headcounts by Age", get_sfu_age_headcounts()),
         "new": StatCategory("New Headcounts by Faculty", get_sfu_new_headcounts()),
         "units": StatCategory("Units Enrolled by Season", get_sfu_units_taken()),
+        "outcomes": StatCategory("Outcomes by Concentration", get_sfu_outcomes())
     }
 
 
