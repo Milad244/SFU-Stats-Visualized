@@ -1,7 +1,5 @@
 import os
-
 import pandas as pd
-import numpy as np
 from flask import Flask, render_template, request
 import plotly.express as px
 import functools
@@ -52,12 +50,13 @@ class Stat:
     Represents a dataframe. Do not use cache or keywords search won't work.
     """
 
-    def __init__(self, label: str, graph_title: str, df: pd.DataFrame, x_lbl: str, y_lbl: str):
+    def __init__(self, label: str, graph_title: str, df: pd.DataFrame, graph_type: str = "bar"):
         self.label = label
         self.graph_title = graph_title
         self.df = df
-        self.x_lbl = x_lbl
-        self.y_lbl = y_lbl
+        self.x_lbl = df.columns[0]
+        self.y_lbl = df.columns[1]
+        self.graph_type = graph_type
         self.keyword = None
 
     def set_keyword(self, keyword) -> None:
@@ -68,6 +67,11 @@ class Stat:
         """
         self.keyword = keyword
 
+    def can_show_stats(self) -> bool:
+        if self.get_filtered_df().empty or self.graph_type != "bar":
+            return False
+        return True
+
     def get_filtered_df(self) -> pd.DataFrame:
         """
         Gets the filtered data frame based on the case-insensitive keyword in x-values.
@@ -76,6 +80,14 @@ class Stat:
         if self.keyword is None:
             return self.df
         return self.df[self.df.apply(lambda row: self.keyword.lower() in str(row[self.x_lbl]).lower(), axis=1)]
+
+    def get_graph(self) -> str:
+        if self.graph_type == "bar":
+            return self.get_bar_graph()
+        elif self.graph_type == "grouped_bar":
+            return self.get_grouped_bar_graph()
+
+        return ""
 
     def get_bar_graph(self) -> str:
         """
@@ -100,6 +112,47 @@ class Stat:
                     "Percent: %{customdata[0]}%"
             ),
             customdata=df[['percentage']].values
+        )
+
+        fig.update_layout(
+            paper_bgcolor='rgb(245, 245, 245)',
+        )
+
+        return fig.to_html(full_html=False)
+
+    def get_grouped_bar_graph(self):
+        df = self.get_filtered_df()
+
+        if df.empty:
+            return '<p class="graph-msg">No Data Found<p>'
+
+        x_col = df.columns[2]
+        y_col = df.columns[1]
+        color_col = df.columns[0]
+
+        back = ""
+        if df[y_col].dtype == object and df[y_col].str.contains('%').any():
+            df[y_col] = df[y_col].str.rstrip('%').astype(float)
+            back = "%"
+
+        shades = [
+            "rgb(179, 0, 0)",
+            "rgb(143, 0, 25)",
+            "rgb(107, 0, 50)",
+            "rgb(79, 0, 75)",
+            "rgb(50, 0, 100)"
+        ]
+
+        fig = px.bar(df, x=x_col, y=y_col, color=color_col, title=self.graph_title, custom_data=[color_col],
+                     color_discrete_sequence=shades)
+
+        fig.update_traces(
+            hovertemplate=(
+                    f"{x_col}: %{{x}}<br>" +
+                    f"{color_col}: %{{customdata[0]}}<br>" +
+                    f"{y_col}: %{{y}}{back}"
+            ),
+            hoverlabel=dict(namelength=0)
         )
 
         fig.update_layout(
@@ -184,9 +237,7 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
     stat = Stat(
         label="Age Distribution",
         graph_title="Total Count by Age (FALL 2023)",
-        df=df,
-        x_lbl=x_lbl,
-        y_lbl=y_lbl
+        df=df
     )
 
     return {"age-count": stat}
@@ -223,9 +274,7 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
     stat = Stat(
         label="New Undergraduates Distribution",
         graph_title="New Undergraduates by Faculty (2024/25)",
-        df=df,
-        x_lbl=x_lbl,
-        y_lbl=y_lbl,
+        df=df
     )
 
     return {"new-count": stat}
@@ -286,9 +335,7 @@ def get_sfu_units_taken() -> dict[str: Stat]:
             df=pd.DataFrame({
                 x_lbl: x_values,
                 y_lbl: seasonal_y_values["summer-units"]
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "fall-units": Stat(
             label="Fall Units",
@@ -296,9 +343,7 @@ def get_sfu_units_taken() -> dict[str: Stat]:
             df=pd.DataFrame({
                 x_lbl: x_values,
                 y_lbl: seasonal_y_values["fall-units"]
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "spring-units": Stat(
             label="Spring Units",
@@ -306,9 +351,7 @@ def get_sfu_units_taken() -> dict[str: Stat]:
             df=pd.DataFrame({
                 x_lbl: x_values,
                 y_lbl: seasonal_y_values["spring-units"]
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         )
     }
 
@@ -321,15 +364,15 @@ class SFUOutcome:
     # Source:
     def __init__(self):
         # Page 1
-        self.concentration = None
+        self.concentration = None  # Str to represent each
         # Page 2
-        self.satisfaction = None
-        self.usefulness = None
-        self.regret = None
+        self.satisfaction = None  # DF
+        self.usefulness = None  # DF
+        self.regret = None  # DF
         # Page 4
-        self.employment_rate = None
-        self.job_relation = None
-        self.income = None
+        self.employment_rate = None  # DF
+        self.job_relation = None  # DF
+        self.income = None  # DF
 
 
 def get_sfu_outcomes() -> dict[str: Stat]:
@@ -340,17 +383,72 @@ def get_sfu_outcomes() -> dict[str: Stat]:
     for outcome_path in outcome_paths:
         outcomes.append(get_outcome(os.path.join(outcome_dir, outcome_path)))
 
+    combined_dataframes = combine_outcomes(outcomes)
+
+    stats = {}
+
+    for category, df in combined_dataframes.items():
+        if df is not None and not df.empty:
+            cleaned_category = category.title().replace('-', ' ')
+
+            stats[category] = Stat(
+                label=cleaned_category,
+                graph_title=f"{cleaned_category} Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
+                df=df,
+                graph_type="grouped_bar"
+            )
+
+    return stats
+
+
+def combine_outcomes(outcomes: list[SFUOutcome]) -> dict[str, pd.DataFrame]:
+    satisfaction_dfs = []
+    usefulness_dfs = []
+    regret_dfs = []
+    employment_rate_dfs = []
+    job_relation_dfs = []
+    income_dfs = []
+
     for outcome in outcomes:
-        print(outcome.__dict__)
+        concentration = outcome.concentration
+
+        if outcome.satisfaction is not None:
+            df = outcome.satisfaction.copy()
+            df['Concentration'] = concentration
+            satisfaction_dfs.append(df)
+
+        if outcome.usefulness is not None:
+            df = outcome.usefulness.copy()
+            df['Concentration'] = concentration
+            usefulness_dfs.append(df)
+
+        if outcome.regret is not None:
+            df = outcome.regret.copy()
+            df['Concentration'] = concentration
+            regret_dfs.append(df)
+
+        if outcome.employment_rate is not None:
+            df = outcome.employment_rate.copy()
+            df['Concentration'] = concentration
+            employment_rate_dfs.append(df)
+
+        if outcome.job_relation is not None:
+            df = outcome.job_relation.copy()
+            df['Concentration'] = concentration
+            job_relation_dfs.append(df)
+
+        if outcome.income is not None:
+            df = outcome.income.copy()
+            df['Concentration'] = concentration
+            income_dfs.append(df)
 
     return {
-        "": Stat(
-            label="",
-            graph_title="",
-            df=pd.DataFrame(),
-            x_lbl="",
-            y_lbl="",
-        )
+        "satisfaction": pd.concat(satisfaction_dfs, ignore_index=True),
+        "usefulness": pd.concat(usefulness_dfs, ignore_index=True),
+        "regret": pd.concat(regret_dfs, ignore_index=True),
+        "employment-rate": pd.concat(employment_rate_dfs, ignore_index=True),
+        "job-relation": pd.concat(job_relation_dfs, ignore_index=True),
+        "income": pd.concat(income_dfs, ignore_index=True)
     }
 
 
@@ -415,7 +513,7 @@ def get_concentration(page) -> str:
     prev_line = search_list(lines, "Simon Fraser University")
     concentration_line = lines[prev_line + 1]
     # The following strips `14.0101: Engineering, general` into `Engineering`
-    return concentration_line[concentration_line.find(": ") + 2:].replace(", general", "")
+    return concentration_line[concentration_line.find(": ") + 2:].replace(", general", "").title()
 
 
 def get_satisfaction(page) -> pd.DataFrame:
@@ -546,9 +644,7 @@ def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: total_x,
                 y_lbl: total_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "men-count": Stat(
             label="Men Count",
@@ -556,9 +652,7 @@ def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: men_x,
                 y_lbl: men_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "women-count": Stat(
             label="Women Count",
@@ -566,9 +660,7 @@ def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: women_x,
                 y_lbl: women_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         )
     }
 
@@ -597,9 +689,7 @@ def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: total_x,
                 y_lbl: total_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "men-count": Stat(
             label="Men Count",
@@ -607,9 +697,7 @@ def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: men_x,
                 y_lbl: men_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         ),
         "women-count": Stat(
             label="Women Count",
@@ -617,9 +705,7 @@ def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
             df=pd.DataFrame({
                 x_lbl: women_x,
                 y_lbl: women_y
-            }),
-            x_lbl=x_lbl,
-            y_lbl=y_lbl,
+            })
         )
     }
 
@@ -662,8 +748,8 @@ def main():
             try:
                 gotten_stat = stat_cat.stat[stat]
                 gotten_stat.set_keyword(keyword)
-                graph_html = gotten_stat.get_bar_graph()
-                if not gotten_stat.get_filtered_df().empty:
+                graph_html = gotten_stat.get_graph()
+                if gotten_stat.can_show_stats():
                     graph_features["Total"] = round(gotten_stat.get_total(), 2)
                     graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
                     graph_features["Median"] = round(gotten_stat.get_median(), 2)
@@ -681,7 +767,10 @@ def main():
                 "query_url": f"/?category={cat_slug}&view={stat_slug}"
             })
 
-    buttons = [{"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"}]
+    buttons = [
+        {"label": "GitHub", "external_url": "https://github.com/Milad244/SFU-Stats-Visualized"},
+        {"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"}
+    ]
     return render_template("index.html", title="SFU Undergraduate Statistics Visualized", categories=categories,
                            buttons=buttons, graph_html=graph_html, graph_features=graph_features)
 
