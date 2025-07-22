@@ -1,9 +1,12 @@
 import os
+import time
+from enum import Enum
 import pandas as pd
 from flask import Flask, render_template, request
 import plotly.express as px
 import functools
 import pdfplumber
+import concurrent.futures
 
 app = Flask(__name__)
 
@@ -121,18 +124,16 @@ class Stat:
         return fig.to_html(full_html=False)
 
     def get_grouped_bar_graph(self):
-        df = self.get_filtered_df()
+        df = self.get_filtered_df().copy()
 
         if df.empty:
             return '<p class="graph-msg">No Data Found<p>'
 
-        x_col = df.columns[2]
-        y_col = df.columns[1]
-        color_col = df.columns[0]
+        color_col = df.columns[2]
 
         back = ""
-        if df[y_col].dtype == object and df[y_col].str.contains('%').any():
-            df[y_col] = df[y_col].str.rstrip('%').astype(float)
+        if df[self.y_lbl].dtype == object and df[self.y_lbl].str.contains('%').any():
+            df[self.y_lbl] = df[self.y_lbl].str.rstrip('%').astype(float)
             back = "%"
 
         shades = [
@@ -143,14 +144,14 @@ class Stat:
             "rgb(50, 0, 100)"
         ]
 
-        fig = px.bar(df, x=x_col, y=y_col, color=color_col, title=self.graph_title, custom_data=[color_col],
+        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, color=color_col, title=self.graph_title, custom_data=[color_col],
                      color_discrete_sequence=shades)
 
         fig.update_traces(
             hovertemplate=(
-                    f"{x_col}: %{{x}}<br>" +
+                    f"{self.x_lbl}: %{{x}}<br>" +
                     f"{color_col}: %{{customdata[0]}}<br>" +
-                    f"{y_col}: %{{y}}{back}"
+                    f"{self.y_lbl}: %{{y}}{back}"
             ),
             hoverlabel=dict(namelength=0)
         )
@@ -358,31 +359,13 @@ def get_sfu_units_taken() -> dict[str: Stat]:
     return stats
 
 
-class SFUOutcome:
-    """Represents an SFU concentration outcome"""
-
-    # Source:
-    def __init__(self):
-        # Page 1
-        self.concentration = None  # Str to represent each
-        # Page 2
-        self.satisfaction = None  # DF
-        self.usefulness = None  # DF
-        self.regret = None  # DF
-        # Page 4
-        self.employment_rate = None  # DF
-        self.job_relation = None  # DF
-        self.income = None  # DF
-
-
 def get_sfu_outcomes() -> dict[str: Stat]:
-    # Get list of get_outcome results then parse into Str-Stat dict
+    start = time.time()
+    print("Starting")
     outcome_dir = "data/outcome_BaccalaureateReports"
-    outcome_paths = os.listdir(outcome_dir)
-    outcomes = []
-    for outcome_path in outcome_paths:
-        outcomes.append(get_outcome(os.path.join(outcome_dir, outcome_path)))
-
+    paths = [os.path.join(outcome_dir, f) for f in os.listdir(outcome_dir)]
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        outcomes = list(executor.map(get_outcome, paths))
     combined_dataframes = combine_outcomes(outcomes)
 
     stats = {}
@@ -397,115 +380,68 @@ def get_sfu_outcomes() -> dict[str: Stat]:
                 df=df,
                 graph_type="grouped_bar"
             )
+    end = time.time()
+    print(f"Elapsed time: {end - start:.2f} seconds")  # 2.71 for 3 pdfs
 
     return stats
 
 
-def combine_outcomes(outcomes: list[SFUOutcome]) -> dict[str, pd.DataFrame]:
-    satisfaction_dfs = []
-    usefulness_dfs = []
-    regret_dfs = []
-    employment_rate_dfs = []
-    job_relation_dfs = []
-    income_dfs = []
+def combine_outcomes(outcomes: dict[str: pd.DataFrame]) -> dict[str, pd.DataFrame]:
+    category_map = {cat.name.lower(): [] for cat in SFUOutcomeCategories}
 
     for outcome in outcomes:
-        concentration = outcome.concentration
-
-        if outcome.satisfaction is not None:
-            df = outcome.satisfaction.copy()
-            df['Concentration'] = concentration
-            satisfaction_dfs.append(df)
-
-        if outcome.usefulness is not None:
-            df = outcome.usefulness.copy()
-            df['Concentration'] = concentration
-            usefulness_dfs.append(df)
-
-        if outcome.regret is not None:
-            df = outcome.regret.copy()
-            df['Concentration'] = concentration
-            regret_dfs.append(df)
-
-        if outcome.employment_rate is not None:
-            df = outcome.employment_rate.copy()
-            df['Concentration'] = concentration
-            employment_rate_dfs.append(df)
-
-        if outcome.job_relation is not None:
-            df = outcome.job_relation.copy()
-            df['Concentration'] = concentration
-            job_relation_dfs.append(df)
-
-        if outcome.income is not None:
-            df = outcome.income.copy()
-            df['Concentration'] = concentration
-            income_dfs.append(df)
+        for key, df in outcome.items():
+            if df is not None:
+                category_map[key].append(df)
 
     return {
-        "satisfaction": pd.concat(satisfaction_dfs, ignore_index=True),
-        "usefulness": pd.concat(usefulness_dfs, ignore_index=True),
-        "regret": pd.concat(regret_dfs, ignore_index=True),
-        "employment-rate": pd.concat(employment_rate_dfs, ignore_index=True),
-        "job-relation": pd.concat(job_relation_dfs, ignore_index=True),
-        "income": pd.concat(income_dfs, ignore_index=True)
+        key.replace("_", "-"): pd.concat(dfs, ignore_index=True) for key, dfs in category_map.items()
     }
 
 
-def get_outcome(outcome_path: str) -> SFUOutcome:
-    outcome = SFUOutcome()
+def get_outcome(outcome_path: str) -> dict[str: pd.DataFrame]:
     found = set()
+    concentration = ""
+    result = {}
+
+    category_triggers = {
+        "B.C. Baccalaureate Outcomes": [
+            SFUOutcomeCategories.RESPONSE_COUNT
+        ],
+        "Program Satisfaction": [
+            SFUOutcomeCategories.SATISFACTION,
+            SFUOutcomeCategories.USEFULNESS,
+            SFUOutcomeCategories.REGRET
+        ],
+        "Employment": [
+            SFUOutcomeCategories.EMPLOYMENT_RATE,
+            SFUOutcomeCategories.JOB_RELATION,
+            SFUOutcomeCategories.INCOME
+        ]
+    }
 
     with pdfplumber.open(outcome_path) as pdf_stats:
         for page in pdf_stats.pages:
+            start = time.time()
             text = page.extract_text()
+            tables = page.extract_tables()
 
-            if "B.C. Baccalaureate Outcomes" in text and "B.C. Baccalaureate Outcomes" not in found:
-                outcome.concentration = get_concentration(page)
-                found.add("B.C. Baccalaureate Outcomes")
+            for trigger, categories in category_triggers.items():
+                if trigger in text and trigger not in found:
+                    if trigger == "B.C. Baccalaureate Outcomes":
+                        concentration = get_concentration(page)
+                    for cat in categories:
+                        result[cat.name.lower()] = get_outcome_category(cat, tables, concentration)
+                    found.add(trigger)
 
-            if "Program Satisfaction" in text and "Program Satisfaction" not in found:
-                # Could alter these groups if not all on same page in other outcomes.
-                outcome.satisfaction = get_satisfaction(page)
-                outcome.usefulness = get_usefulness(page)
-                outcome.regret = get_regret(page)
-                found.add("Program Satisfaction")
-
-            if "Employment" in text and "Employment" not in found:
-                # Could alter these groups if not all on same page in other outcomes.
-                outcome.employment_rate = get_employment_rate(page)
-                outcome.job_relation = get_job_relation(page)
-                outcome.income = get_income(page)
-                found.add("Employment")
-
-    return outcome
+    return result
 
 
-def search_list(lst: list, keyword) -> int:
+def search_list(lst: list[str], keyword) -> int:
     for i in range(len(lst)):
         if keyword == lst[i]:
             return i
     return -1
-
-
-def get_between_table(page, x_index, y_index, prev_value, row_count: int, buffer: int = 0) -> [list, list]:
-    x_values = []
-    y_values = []
-    for table in page.extract_tables():
-        started = False
-        for row in table:
-            if row_count <= 0:
-                break
-            if started:
-                if buffer > 0:
-                    buffer -= 1
-                else:
-                    x_values.append(row[x_index])
-                    y_values.append(row[y_index])
-                    row_count -= 1
-            if prev_value in row:
-                started = True
-    return x_values, y_values
 
 
 def get_concentration(page) -> str:
@@ -513,66 +449,120 @@ def get_concentration(page) -> str:
     prev_line = search_list(lines, "Simon Fraser University")
     concentration_line = lines[prev_line + 1]
     # The following strips `14.0101: Engineering, general` into `Engineering`
-    return concentration_line[concentration_line.find(": ") + 2:].replace(", general", "").title()
+    return concentration_line[concentration_line.find(": ") + 2:]\
+        .replace(", general", "").replace(", other", "").title()
 
 
-def get_satisfaction(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 2, "Program Satisfaction:", 4)
+class PDFTableValue:
+    def __init__(self, x_lbl: str, y_lbl: str, x_index: int, y_index: int, prev_value: str, row_count: int,
+                 buffer: int = 0):
+        self.x_lbl = x_lbl
+        self.y_lbl = y_lbl
+        self.x_index = x_index
+        self.y_index = y_index
+        self.prev_value = prev_value
+        self.row_count = row_count
+        self.buffer = buffer
 
-    return pd.DataFrame({
-        "Satisfaction Level": x_values,
-        "Percentage": y_values
-    })
+    def get_values(self, tables, concentration: str) -> pd.DataFrame:
+        x_values = []
+        y_values = []
+        remaining_rows = self.row_count
+        remaining_buffer = self.buffer
+
+        for table in tables:
+            started = False
+            for row in table:
+                if remaining_rows <= 0:
+                    if self.x_lbl == SFUOutcomeCategories.INCOME.value.x_lbl:
+                        for i in range(len(x_values)):
+                            x_values[i] = x_values[i].split(" (full−time) ($)")[0]
+                            y_values[i] = float(y_values[i].replace(",", ""))
+                    elif self.x_lbl == SFUOutcomeCategories.RESPONSE_COUNT.value.x_lbl:
+                        for i in range(len(x_values)):
+                            x_values[i] = x_values[i].replace(" and Response Rate", "")
+                            y_values[i] = float(y_values[i])
+
+                    return pd.DataFrame({
+                        "Concentration": concentration,
+                        self.y_lbl: y_values,
+                        self.x_lbl: x_values
+                    })
+                if started:
+                    if remaining_buffer > 0:
+                        remaining_buffer -= 1
+                    else:
+                        x_values.append(row[self.x_index])
+                        y_values.append(row[self.y_index])
+                        remaining_rows -= 1
+                if self.prev_value in row:
+                    started = True
+
+        return pd.DataFrame()
 
 
-def get_usefulness(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 2, "Usefulness of Knowledge, Skills, and Abilities\nAcquired "
-                                                       "during Program in Work:", 4)
+class SFUOutcomeCategories(Enum):
+    RESPONSE_COUNT = PDFTableValue(
+        x_lbl="Response",
+        y_lbl="Count",
+        x_index=0,
+        y_index=1,
+        prev_value="Survey Response Rate:",
+        row_count=2
+    )
+    SATISFACTION = PDFTableValue(
+        x_lbl="Satisfaction Level",
+        y_lbl="Percentage",
+        x_index=0,
+        y_index=2,
+        prev_value="Program Satisfaction:",
+        row_count=4
+    )
+    USEFULNESS = PDFTableValue(
+        x_lbl="Usefulness Level",
+        y_lbl="Percentage",
+        x_index=0,
+        y_index=2,
+        prev_value="Usefulness of Knowledge, Skills, and Abilities\nAcquired during Program in Work:",
+        row_count=4
+    )
+    REGRET = PDFTableValue(
+        x_lbl="Would Select the Same Program Again",
+        y_lbl="Percentage",
+        x_index=0,
+        y_index=2,
+        prev_value="Would select the same program again:",
+        row_count=2
+    )
+    EMPLOYMENT_RATE = PDFTableValue(
+        x_lbl="Employment Status",
+        y_lbl="Percentage",
+        x_index=0,
+        y_index=2,
+        prev_value="Employment:",
+        row_count=2
+    )
+    JOB_RELATION = PDFTableValue(
+        x_lbl="Job Relation",
+        y_lbl="Percentage",
+        x_index=0,
+        y_index=2,
+        prev_value="How related is your main job to your program?",
+        row_count=4
+    )
+    INCOME = PDFTableValue(
+        x_lbl="Income",
+        y_lbl="Amount",
+        x_index=0,
+        y_index=1,
+        prev_value="$100,000 and Above",
+        row_count=2,
+        buffer=1
+    )
 
-    return pd.DataFrame({
-        "Usefulness Level": x_values,
-        "Percentage": y_values
-    })
 
-
-def get_regret(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 2, "Would select the same program again:", 2)
-
-    return pd.DataFrame({
-        "Would Select the Same Program Again": x_values,
-        "Percentage": y_values
-    })
-
-
-def get_employment_rate(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 2, "Employment:", 2)
-
-    return pd.DataFrame({
-        "Employment Status": x_values,
-        "Percentage": y_values
-    })
-
-
-def get_job_relation(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 2, "How related is your main job to your program?", 4)
-
-    return pd.DataFrame({
-        "Job Relation": x_values,
-        "Percentage": y_values
-    })
-
-
-def get_income(page) -> pd.DataFrame:
-    x_values, y_values = get_between_table(page, 0, 1, "$100,000 and Above", 2, 1)
-
-    for i in range(len(x_values)):
-        x_values[i] = x_values[i].split(" (full−time) ($)")[0]
-        y_values[i] = float(y_values[i].replace(",", ""))
-
-    return pd.DataFrame({
-        "Income": x_values,
-        "Amount": y_values
-    })
+def get_outcome_category(category: SFUOutcomeCategories, tables, concentration: str) -> pd.DataFrame:
+    return category.value.get_values(tables, concentration)
 
 
 class SFUProgram:
