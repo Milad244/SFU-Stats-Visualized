@@ -150,7 +150,10 @@ class Stat:
             "rgb(143, 0, 25)",
             "rgb(107, 0, 50)",
             "rgb(79, 0, 75)",
-            "rgb(50, 0, 100)"
+            "rgb(50, 0, 100)",
+            "rgb(0, 0, 150)",
+            "rgb(0, 175, 240)",
+            "rgb(30, 212, 114)",
         ]
 
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, color=color_col, title=self.graph_title, custom_data=[color_col],
@@ -254,37 +257,67 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
 def get_sfu_new_headcounts() -> dict[str: Stat]:
     """
     Gets the cleaned up new undergraduates distribution of SFU.
-    :return: A Stat containing new undergraduates headcount by faculty.
+    :return: A Stat containing new undergraduates headcount by faculty for the latest year and a Stat
+    to show new headcount growth in the last few years.
     """
     stat_file = "data/headcount/new_undergrads_distribution_ST12.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8)
 
-    x_lbl = "Faculty"
-    y_lbl = "New Undergraduates Count"
-    x_y_dict = {}
+    # DF: Fiscal Year | Count | Faculty
+    combined_df = pd.DataFrame()
+    years_left = 10
+    current_year = ""
+    current_count, current_faculty = [], []
 
     for i, row in stats.iterrows():
-        faculty = row["Faculty"]
+        if not years_left > 0:
+             break
+
+        year = row["Fiscal Year"]
+        if not pd.isna(year):
+            if "Total" in year:
+                continue
+            current_year = year
+
         count = row[" Grand Total"]  # Header in Excel file has a space in front.
+        faculty = row["Faculty"]
 
         if faculty == "Unspecified":
-            break
+            year_arr = [current_year] * len(current_count)
+            year_df = pd.DataFrame({
+                "Fiscal Year": year_arr,
+                "New Undergraduates Count": current_count,
+                "Faculty": current_faculty
+            })
+            current_count, current_faculty = [], []
+            combined_df = pd.concat([combined_df, year_df], ignore_index=True)
+            years_left -= 1
+            continue
 
-        x_y_dict[faculty] = count
+        current_count.append(count)
+        current_faculty.append(faculty)
 
-    x_values, y_values = get_ordered_x_y(x_y_dict)
-    df = pd.DataFrame({
-        x_lbl: x_values,
-        y_lbl: y_values
-    })
-
-    stat = Stat(
-        label="New Undergraduates Distribution",
+    latest_year_df = combined_df[combined_df.apply(lambda r: "2024/25" in r["Fiscal Year"], axis=1)]
+    latest_year_df = latest_year_df.sort_values("New Undergraduates Count")
+    latest_year_df = latest_year_df.drop(["Fiscal Year"], axis=1)
+    new_order = ["Faculty", "New Undergraduates Count"]
+    latest_year_df = latest_year_df.reindex(columns=new_order)
+    latest_stat = Stat(
+        label="New Distribution",
         graph_title="New Undergraduates by Faculty (2024/25)",
-        df=df
+        df=latest_year_df
+    )
+    growth_stat = Stat(
+        label="New Growth",
+        graph_title="Growth of New Undergraduates by Faculty (2024/25)",
+        df=combined_df,
+        graph_type="grouped_bar"
     )
 
-    return {"new-count": stat}
+    return {
+        "new-count": latest_stat,
+        "new-growth": growth_stat,
+    }
 
 
 def get_sfu_units_taken() -> dict[str: Stat]:
