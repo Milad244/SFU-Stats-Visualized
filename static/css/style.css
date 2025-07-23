@@ -18,7 +18,7 @@ a {
 }
 
 footer {
-    margin-top: 50px;
+    margin-top: 20px;
 }
 
 button {
@@ -105,7 +105,7 @@ input:focus {
 }
 
 .graph-features-container {
-    padding: 0px;
+    padding: 0;
 }
 
 .graph-features-container p{

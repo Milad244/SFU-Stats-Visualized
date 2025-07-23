@@ -10,12 +10,10 @@ import concurrent.futures
 
 app = Flask(__name__)
 
-"""Data from https://www.sfu.ca/irp/students.html"""
-
 
 def nan_to_int(num: int) -> int:
     """
-    Converts a NAN value into 0. If not NAN, then leaves as is.
+    Converts a NaN value into 0. If not NaN, then leaves as is.
     :param num: the number to convert
     :return: the converted number
     """
@@ -50,9 +48,8 @@ def get_ordered_x_y(count_dict: dict[str: int]) -> (list, list):
 
 class Stat:
     """
-    Represents a dataframe. Do not use cache or keywords search won't work.
+    Represents a dataframe. Do not use cache or else keywords search won't work.
     """
-
     def __init__(self, label: str, graph_title: str, df: pd.DataFrame, graph_type: str = "bar"):
         self.label = label
         self.graph_title = graph_title
@@ -65,12 +62,16 @@ class Stat:
     def set_keyword(self, keyword) -> None:
         """
         Sets the keyword for searching in dataframe.
-        :param keyword: the keyword
+        :param keyword: the keyword to search for
         :return: None
         """
         self.keyword = keyword
 
     def can_show_stats(self) -> bool:
+        """
+        Checks if the keyword can be searched in dataframe.
+        :return: True if the keyword can be searched in dataframe.
+        """
         if self.get_filtered_df().empty or self.graph_type != "bar":
             return False
         return True
@@ -85,6 +86,10 @@ class Stat:
         return self.df[self.df.apply(lambda row: self.keyword.lower() in str(row[self.x_lbl]).lower(), axis=1)]
 
     def get_graph(self) -> str:
+        """
+        Gets the graph based on the graph type and returns its html.
+        :return: the graph html
+        """
         if self.graph_type == "bar":
             return self.get_bar_graph()
         elif self.graph_type == "grouped_bar":
@@ -95,7 +100,7 @@ class Stat:
     def get_bar_graph(self) -> str:
         """
         Creates a bar graph.
-        :return: The bar graph html
+        :return: the bar graph html
         """
         df = self.get_filtered_df()
 
@@ -124,6 +129,10 @@ class Stat:
         return fig.to_html(full_html=False)
 
     def get_grouped_bar_graph(self):
+        """
+        Creates a grouped bar graph.
+        :return: the grouped bar graph html
+        """
         df = self.get_filtered_df().copy()
 
         if df.empty:
@@ -200,7 +209,6 @@ class StatCategory:
     """
     Represents a category of stats.
     """
-
     def __init__(self, title: str, stat: Stat):
         self.title = title
         self.stat = stat
@@ -209,9 +217,8 @@ class StatCategory:
 def get_sfu_age_headcounts() -> dict[str: Stat]:
     """
     Gets the cleaned up age distribution of SFU.
-    :return: A Stat containing headcount by age
+    :return: A Stat containing headcount by age.
     """
-
     stat_file = "data/headcount/age_distribution_ST20.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8, usecols="A:B")
 
@@ -247,9 +254,8 @@ def get_sfu_age_headcounts() -> dict[str: Stat]:
 def get_sfu_new_headcounts() -> dict[str: Stat]:
     """
     Gets the cleaned up new undergraduates distribution of SFU.
-    :return: A Stat containing new undergraduates headcount by faculty
+    :return: A Stat containing new undergraduates headcount by faculty.
     """
-
     stat_file = "data/headcount/new_undergrads_distribution_ST12.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table", header=8)
 
@@ -284,7 +290,7 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
 def get_sfu_units_taken() -> dict[str: Stat]:
     """
     Gets the units enrolled headcounts for each season.
-    :return: Stats of headcounts by units enrolled for the three different seasons
+    :return: Stats of headcounts by units enrolled for the three different seasons.
     """
     stat_file = "data/headcount/units_enrolled_distribution_ST32.pdf"
 
@@ -360,8 +366,13 @@ def get_sfu_units_taken() -> dict[str: Stat]:
 
 
 def get_sfu_outcomes() -> dict[str: Stat]:
+    """
+    Gets the outcomes from each concentration in the outcome Baccalaureate Reports of 2024.
+    :return: Stats of outcomes for each concentration.
+    """
     start = time.time()
-    print("Starting")
+    print("Starting Outcome Parsing")
+
     outcome_dir = "data/outcome_BaccalaureateReports"
     paths = [os.path.join(outcome_dir, f) for f in os.listdir(outcome_dir)]
     with concurrent.futures.ProcessPoolExecutor() as executor:
@@ -369,7 +380,6 @@ def get_sfu_outcomes() -> dict[str: Stat]:
     combined_dataframes = combine_outcomes(outcomes)
 
     stats = {}
-
     for category, df in combined_dataframes.items():
         if df is not None and not df.empty:
             cleaned_category = category.title().replace('-', ' ')
@@ -380,13 +390,20 @@ def get_sfu_outcomes() -> dict[str: Stat]:
                 df=df,
                 graph_type="grouped_bar"
             )
+
     end = time.time()
-    print(f"Elapsed time: {end - start:.2f} seconds")  # 2.71 for 3 pdfs
+    print(f"Outcome Parsing Elapsed time: {end - start:.2f} seconds")
 
     return stats
 
 
 def combine_outcomes(outcomes: dict[str: pd.DataFrame]) -> dict[str, pd.DataFrame]:
+    """
+    Creates a dictionary for each category that combines each outcome
+    of that category from every concentration into a single dataframe.
+    :param outcomes: dictionary of outcome dataframes
+    :return: Dictionary of combined outcome dataframes.
+    """
     category_map = {cat.name.lower(): [] for cat in SFUOutcomeCategories}
 
     for outcome in outcomes:
@@ -400,6 +417,12 @@ def combine_outcomes(outcomes: dict[str: pd.DataFrame]) -> dict[str, pd.DataFram
 
 
 def get_outcome(outcome_path: str) -> dict[str: pd.DataFrame]:
+    """
+    Gets a dictionary of outcome dataframes where each key represents a category and each value it's dataframe.
+    This is done by parsing the predictable outcome pdf files for each category.
+    :param outcome_path: path to outcome pdf file
+    :return: Dictionary of outcome dataframes.
+    """
     found = set()
     concentration = ""
     result = {}
@@ -422,7 +445,6 @@ def get_outcome(outcome_path: str) -> dict[str: pd.DataFrame]:
 
     with pdfplumber.open(outcome_path) as pdf_stats:
         for page in pdf_stats.pages:
-            start = time.time()
             text = page.extract_text()
             tables = page.extract_tables()
 
@@ -438,6 +460,12 @@ def get_outcome(outcome_path: str) -> dict[str: pd.DataFrame]:
 
 
 def search_list(lst: list[str], keyword) -> int:
+    """
+    Searches a list of strings against the keyword and returns the index of the first occurrence.
+    :param lst: list of strings
+    :param keyword: keyword to search for
+    :return: Index of keyword. -1 if none found.
+    """
     for i in range(len(lst)):
         if keyword == lst[i]:
             return i
@@ -445,6 +473,11 @@ def search_list(lst: list[str], keyword) -> int:
 
 
 def get_concentration(page) -> str:
+    """
+    Gets the concentration from the outcome pdf file.
+    :param page: pdf page to extract concentration from
+    :return: Cleaned up concentration from the outcome pdf file.
+    """
     lines = page.extract_text().split("\n")
     prev_line = search_list(lines, "Simon Fraser University")
     concentration_line = lines[prev_line + 1]
@@ -454,6 +487,9 @@ def get_concentration(page) -> str:
 
 
 class PDFTableValue:
+    """
+    Represents a value/stat(s) that can be extracted from a pdf table.
+    """
     def __init__(self, x_lbl: str, y_lbl: str, x_index: int, y_index: int, prev_value: str, row_count: int,
                  buffer: int = 0):
         self.x_lbl = x_lbl
@@ -465,6 +501,12 @@ class PDFTableValue:
         self.buffer = buffer
 
     def get_values(self, tables, concentration: str) -> pd.DataFrame:
+        """
+        Gets the values as a dataframe from a pdf table.
+        :param tables: pdf table to extract values from
+        :param concentration: concentration of the values
+        :return: dataframe of values extracted from the table
+        """
         x_values = []
         y_values = []
         remaining_rows = self.row_count
@@ -502,6 +544,9 @@ class PDFTableValue:
 
 
 class SFUOutcomeCategories(Enum):
+    """
+    Enum that represents SFU outcome categories.
+    """
     RESPONSE_COUNT = PDFTableValue(
         x_lbl="Response",
         y_lbl="Count",
@@ -569,7 +614,6 @@ class SFUProgram:
     """
     Represents an SFU program.
     """
-
     def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
         self.faculty = faculty
         self.program = program
@@ -584,7 +628,6 @@ def get_sfu_programs() -> list[SFUProgram]:
     Gets the cleaned up headcounts from 2023/24 for each SFU program.
     :return: A list of classes representing each program
     """
-
     stat_file = "data/headcount/program_distribution_ST04.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table by gender", header=11, usecols="A:E")
 
@@ -612,7 +655,6 @@ def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
     Gets the headcounts for each SFU faculty.
     :return: Stats of headcounts by faculty for three different measures: total-count, men-count, and women-count
     """
-
     total_fac = {}
     men_fac = {}
     women_fac = {}
@@ -660,7 +702,6 @@ def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat
     Gets the headcounts for each SFU program.
     :return: Stats of headcounts by program for three different measures: total-count, men-count, and women-count
     """
-
     x_lbl = "Program"
     y_lbl = "Count"
     total_ordered = sorted(sfu_programs, key=lambda p: p.total_count)
@@ -724,7 +765,6 @@ def main():
     the selected data, and all other navigation.
     :return: the rendering string
     """
-
     category = request.args.get("category")
     stat = request.args.get("view")
     keyword = request.args.get("keyword")
