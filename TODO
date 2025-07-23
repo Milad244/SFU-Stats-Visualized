@@ -9,7 +9,7 @@
 - [x] Make plotly graphs look better
 - [x] Remove DS Store file
 - [ ] Add grouped bars for the total graphs or make the extra info appear on hover
-- [ ] Make getting data into separate py file and store it for data persistence.
+- [ ] Make getting data into separate py file and store it for faster loading speeds.
 - [x] Make entire website look better (html/css changes)
 
 ## Stats
@@ -17,5 +17,5 @@
 - [x] Age distribution (not doing by part/full time SFU student because seems excessive to me). From ST20.
 - [x] Units enrolled distribution by season. From ST32.
 - [x] New undergraduates by faculty. From ST12.
-- [ ] Outcomes by concentration (probably only doing most popular programs since so many). From Baccalaureate Reports.
+- [x] Outcomes by concentration (probably only doing most popular programs since so many). From Baccalaureate Reports.
 - [ ] Growth of ST04 and ST12 (maybe).
