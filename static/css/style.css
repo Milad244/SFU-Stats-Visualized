@@ -11,6 +11,7 @@ body {
 h1 {
     color: rgb(179, 0, 0);
     font-size: 3.5em;
+    margin: 25px;
 }
 
 a {
@@ -22,26 +23,26 @@ footer {
 }
 
 button {
-  background-color: #111;
-  color: #fff;
-  padding: 0.5em 1em;
-  font-size: 1.2em;
-  border: none;
-  border-radius: 0.3em;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    background-color: #111;
+    color: #fff;
+    padding: 0.5em 1em;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 0.3em;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 button:hover {
-  background-color: #222;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  transform: translateY(-1px);
+    background-color: #222;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-1px);
 }
 
 button:active {
-  transform: scale(0.98);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    transform: scale(0.98);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 .categories {
@@ -51,50 +52,54 @@ button:active {
     margin: auto;
 }
 
-.dropdown {
+.split-dropdown {
     position: relative;
-    display: inline-block;
+    display: inline-flex;
     padding: 10px;
-  }
+}
 
-.dropdown-toggle {
+.dropdown-main-button, .dropdown-toggle {
     background-color: rgb(50, 0, 100);
     color: white;
     padding: 8px 32px;
     border: none;
     cursor: pointer;
-    border-radius: 4px;
-    font-size: 2em;
+    font-size: 1.8em;
+    transition: background-color 0.2s;
 }
 
-.dropdown-toggle::after {
-    /**Going to split this I think*/
-    content: "▼";
-    font-size: 0.8em;
-    margin-left: 8px;
-
+.dropdown-main-button {
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
 }
 
-.dropdown-toggle:hover {
-  background-color: rgb(62.5, 0, 125);
-  box-shadow: 0 4px 10px rgba(62.5, 0, 125, 0.3);
+.dropdown-toggle {
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    width: 50px;
+    text-align: center;
 }
 
-.dropdown-toggle:active {
-  box-shadow: 0 2px 6px rgba(62.5, 0, 125, 0.4);
+.dropdown-main-button:hover, .dropdown-toggle:hover {
+    background-color: rgb(60, 0, 120);
+    box-shadow: 0 4px 10px rgba(62.5, 0, 125, 0.3);
+    transform: none;
+}
+
+.dropdown-main-button:hover, .dropdown-toggle:active {
+    box-shadow: 0 2px 6px rgba(62.5, 0, 125, 0.4);
 }
 
 .dropdown-menu {
     display: none;
     position: absolute;
     background-color: white;
-    /**min-width: 160px;**/
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    z-index: 1;
-    margin-top: 4px;
+    z-index: 100;
     border-radius: 4px;
     overflow: hidden;
-    white-space: nowrap;
+    top: 100%;
+    right: 0;
 }
 
 .dropdown-menu a {
@@ -125,13 +130,13 @@ button:active {
 }
 
 .footer-btn:hover {
-  background-color: #6f005b;
-  box-shadow: 0 4px 10px rgba(87, 0, 71, 0.4);
+    background-color: #6f005b;
+    box-shadow: 0 4px 10px rgba(87, 0, 71, 0.4);
 }
 
 .footer-btn:active {
-  background-color: #4a003b;
-  box-shadow: 0 2px 6px rgba(87, 0, 71, 0.6);
+    background-color: #4a003b;
+    box-shadow: 0 2px 6px rgba(87, 0, 71, 0.6);
 }
 
 .graph-msg {

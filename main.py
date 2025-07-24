@@ -811,6 +811,9 @@ def main():
 
     for cat_slug, stat_cat in all_stats.items():
         if category == cat_slug:
+            if stat is None:
+                first_stat = list(stat_cat.stat.items())[0][0]
+                return redirect(url_for("main", category=cat_slug, view=first_stat))
             try:
                 gotten_stat = stat_cat.stat[stat]
                 gotten_stat.set_keyword(keyword)

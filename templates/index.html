@@ -13,15 +13,16 @@
     <h1>{{ title }}</h1>
 
     <div class="categories">
-        <div class="dropdown" id="myDropdown">
-            <button class="dropdown-toggle">
+        <div class="split-dropdown">
+            <button class="dropdown-main-button">
                 {% for key, value in categories.items() %}
                     {% if request.args.get("category") == key %}
                         {{ value.title }}
                     {% endif %}
                 {% endfor %}
             </button>
-            <div class="dropdown-menu">
+            <button class="dropdown-toggle" onclick="toggleDropdown()">▾</button>
+            <div class="dropdown-menu" id="category-dropdown">
                 {% for key, value in categories.items() %}
                      {% if request.args.get("category") == key %}
                         <a id="active-category" href={{ value.query_url }}>{{ value.title }}</a>
@@ -85,16 +86,14 @@
 </html>
 
 <script>
-  const dropdown = document.getElementById('myDropdown');
-  const toggleBtn = dropdown.querySelector('.dropdown-toggle');
-
-  toggleBtn.addEventListener('click', () => {
-    dropdown.classList.toggle('show');
-  });
-
-  document.addEventListener('click', (e) => {
-    if (!dropdown.contains(e.target)) {
-      dropdown.classList.remove('show');
+    function toggleDropdown() {
+        const menu = document.getElementById("category-dropdown");
+        menu.style.display = menu.style.display === "block" ? "none" : "block";
     }
-  });
+
+    document.addEventListener("click", (e) => {
+    if (!e.target.closest(".split-dropdown")) {
+        document.getElementById("category-dropdown").style.display = "none";
+    }
+    });
 </script>
