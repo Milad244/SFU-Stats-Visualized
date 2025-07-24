@@ -13,24 +13,39 @@
     <h1>{{ title }}</h1>
 
     <div class="categories">
-        {% for key, value in categories.items() %}
-            <div>
-                {% if request.args.get("category") == key %}
-                    <h2 id="active-category">{{ value.title }}</h2>
-                {% else %}
-                    <h2>{{ value.title }}</h2>
-                {% endif %}
-                {% for button in value.buttons %}
-                    <a href="{{ button.query_url }}">
-                        {% if request.args.get("view") == button.stat_slug and request.args.get("category") == key %}
-                            <button id="active-view" type="button">{{ button.label }}</button>
-                        {% else %}
-                            <button type="button">{{ button.label }}</button>
-                        {% endif %}
-                    </a>
+        <div class="dropdown" id="myDropdown">
+            <button class="dropdown-toggle">
+                {% for key, value in categories.items() %}
+                    {% if request.args.get("category") == key %}
+                        {{ value.title }}
+                    {% endif %}
+                {% endfor %}
+            </button>
+            <div class="dropdown-menu">
+                {% for key, value in categories.items() %}
+                     {% if request.args.get("category") == key %}
+                        <a id="active-category" href={{ value.query_url }}>{{ value.title }}</a>
+                     {% else %}
+                         <a href={{ value.query_url }}>{{ value.title }}</a>
+                    {% endif %}
                 {% endfor %}
             </div>
-        {% endfor %}
+        </div>
+        <div class="views">
+            {% for key,value in categories.items() %}
+                {% for button in value.buttons %}
+                    {% if request.args.get("category") == key %}
+                        <a href="{{ button.query_url }}">
+                            {% if request.args.get("view") == button.stat_slug %}
+                                <button id="active-view" type="button">{{ button.label }}</button>
+                            {% else %}
+                                <button type="button">{{ button.label }}</button>
+                            {% endif %}
+                        </a>
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
+        </div>
     </div>
 
     {% if graph_html %}
@@ -68,3 +83,18 @@
     </footer>
 </body>
 </html>
+
+<script>
+  const dropdown = document.getElementById('myDropdown');
+  const toggleBtn = dropdown.querySelector('.dropdown-toggle');
+
+  toggleBtn.addEventListener('click', () => {
+    dropdown.classList.toggle('show');
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!dropdown.contains(e.target)) {
+      dropdown.classList.remove('show');
+    }
+  });
+</script>

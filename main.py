@@ -2,7 +2,7 @@ import os
 import time
 from enum import Enum
 import pandas as pd
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 import plotly.express as px
 import functools
 import pdfplumber
@@ -806,6 +806,9 @@ def main():
 
     all_stats = get_all_stats()
 
+    if category is None:
+        return redirect(url_for("main", category="faculty"))
+
     for cat_slug, stat_cat in all_stats.items():
         if category == cat_slug:
             try:
@@ -823,7 +826,7 @@ def main():
 
     categories = {}
     for cat_slug, stat_cat in all_stats.items():
-        categories[cat_slug] = {"title": stat_cat.title, "buttons": []}
+        categories[cat_slug] = {"title": stat_cat.title, "query_url": f"/?category={cat_slug}", "buttons": []}
         for stat_slug, stat in stat_cat.stat.items():
             categories[cat_slug]["buttons"].append({
                 "label": stat.label,
