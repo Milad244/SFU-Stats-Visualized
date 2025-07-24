@@ -65,6 +65,14 @@ button:active {
     margin-bottom: 10px;
 }
 
+#active-category {
+    color: rgb(100, 0, 200);
+}
+
+#active-view {
+    background-color: #061f3c
+}
+
 .footer-btn {
     background-color: #570047;
 }

@@ -11,7 +11,7 @@
 - [ ] Add grouped bars for the total graphs or make the extra info appear on hover
 - [ ] Make getting data into separate py file and store it for faster loading speeds
 - [x] Make entire website look better (html/css changes)
-- [ ] Make view button highlighted when in that view so users know what view they are looking at
+- [x] Make view button highlighted when in that view so users know what view they are looking at
 - [ ] Host the website
 
 ## Stats

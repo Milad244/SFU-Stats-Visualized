@@ -15,10 +15,18 @@
     <div class="categories">
         {% for key, value in categories.items() %}
             <div>
-                <h2>{{value.title}}</h2>
+                {% if request.args.get("category") == key %}
+                    <h2 id="active-category">{{ value.title }}</h2>
+                {% else %}
+                    <h2>{{ value.title }}</h2>
+                {% endif %}
                 {% for button in value.buttons %}
                     <a href="{{ button.query_url }}">
-                        <button type="button">{{ button.label }}</button>
+                        {% if request.args.get("view") == button.stat_slug and request.args.get("category") == key %}
+                            <button id="active-view" type="button">{{ button.label }}</button>
+                        {% else %}
+                            <button type="button">{{ button.label }}</button>
+                        {% endif %}
                     </a>
                 {% endfor %}
             </div>

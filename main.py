@@ -827,7 +827,8 @@ def main():
         for stat_slug, stat in stat_cat.stat.items():
             categories[cat_slug]["buttons"].append({
                 "label": stat.label,
-                "query_url": f"/?category={cat_slug}&view={stat_slug}"
+                "query_url": f"/?category={cat_slug}&view={stat_slug}",
+                "stat_slug": stat_slug
             })
 
     buttons = [
