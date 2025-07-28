@@ -36,13 +36,11 @@
             {% for key,value in categories.items() %}
                 {% for button in value.buttons %}
                     {% if request.args.get("category") == key %}
-                        <a href="{{ button.query_url }}">
-                            {% if request.args.get("view") == button.stat_slug %}
-                                <button id="active-view" type="button">{{ button.label }}</button>
-                            {% else %}
-                                <button type="button">{{ button.label }}</button>
-                            {% endif %}
-                        </a>
+                        {% if request.args.get("view") == button.stat_slug %}
+                            <button onclick="location.href='{{ button.query_url }}'" id="active-view" type="button">{{ button.label }}</button>
+                        {% else %}
+                            <button onclick="location.href='{{ button.query_url }}'" type="button">{{ button.label }}</button>
+                        {% endif %}
                     {% endif %}
                 {% endfor %}
             {% endfor %}

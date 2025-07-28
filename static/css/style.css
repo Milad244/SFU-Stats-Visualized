@@ -2,6 +2,7 @@
     text-align: center;
     box-sizing: border-box;
     font-family: "WDXL Lubrifont SC", sans-serif;
+    /**font-family: "Roboto", sans-serif;*/
 }
 
 body {
@@ -123,6 +124,10 @@ button:active {
 
 #active-view {
     background-color: #061f3c
+}
+
+.views button {
+    margin-bottom: 2px;
 }
 
 .footer-btn {

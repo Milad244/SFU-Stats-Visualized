@@ -153,7 +153,7 @@ class Stat:
             "rgb(50, 0, 100)",
             "rgb(0, 0, 150)",
             "rgb(0, 175, 240)",
-            "rgb(30, 212, 114)",
+            "rgb(0, 184, 110)",
         ]
 
         fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, color=color_col, title=self.graph_title, custom_data=[color_col],
@@ -170,7 +170,14 @@ class Stat:
 
         fig.update_layout(
             paper_bgcolor='rgb(245, 245, 245)',
+            legend=dict(
+                orientation="h",
+                y=2,
+                xanchor="center",
+                x=0.5,
+            )
         )
+        # At width 655 overlaps with graph title
 
         return fig.to_html(full_html=False)
 
@@ -271,7 +278,7 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
 
     for i, row in stats.iterrows():
         if not years_left > 0:
-             break
+            break
 
         year = row["Fiscal Year"]
         if not pd.isna(year):
@@ -515,7 +522,7 @@ def get_concentration(page) -> str:
     prev_line = search_list(lines, "Simon Fraser University")
     concentration_line = lines[prev_line + 1]
     # The following strips `14.0101: Engineering, general` into `Engineering`
-    return concentration_line[concentration_line.find(": ") + 2:]\
+    return concentration_line[concentration_line.find(": ") + 2:] \
         .replace(", general", "").replace(", other", "").title()
 
 
@@ -813,7 +820,7 @@ def main():
         if category == cat_slug:
             if stat is None:
                 first_stat = list(stat_cat.stat.items())[0][0]
-                return redirect(url_for("main", category=cat_slug, view=first_stat))
+                # return redirect(url_for("main", category=cat_slug, view=first_stat))
             try:
                 gotten_stat = stat_cat.stat[stat]
                 gotten_stat.set_keyword(keyword)
