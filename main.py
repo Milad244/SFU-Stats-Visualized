@@ -22,41 +22,19 @@ def nan_to_int(num: int) -> int:
     return num
 
 
-def get_ordered_x_y(count_dict: dict[str: int]) -> (list, list):
-    """
-    Turns a dictionary into two lists that are in the same order.
-    :param count_dict: the dictionary to convert into two lists
-    :return: a tuple with the first value as x-values and the second value as y-values
-    """
-    ordered_x = []
-    ordered_y = []
-    for key, value in count_dict.items():
-        ordered_x.append(key)
-        ordered_y.append(value)
-
-    n = len(ordered_y)
-    for i in range(n):
-        smallest_index = i
-        for j in range(i + 1, n):
-            if ordered_y[j] < ordered_y[smallest_index]:
-                smallest_index = j
-        ordered_y[i], ordered_y[smallest_index] = ordered_y[smallest_index], ordered_y[i]
-        ordered_x[i], ordered_x[smallest_index] = ordered_x[smallest_index], ordered_x[i]
-
-    return ordered_x, ordered_y
-
-
 class Stat:
     """
     Represents a dataframe. Do not use cache or else keywords search won't work.
     """
-    def __init__(self, label: str, graph_title: str, df: pd.DataFrame, graph_type: str = "bar"):
+    def __init__(self, label: str, graph_title: str, df: pd.DataFrame, graph_type: str = "bar",
+                 extra_hover_columns: list[str] = []):
         self.label = label
         self.graph_title = graph_title
         self.df = df
         self.x_lbl = df.columns[0]
         self.y_lbl = df.columns[1]
         self.graph_type = graph_type
+        self.extra_hover_columns = extra_hover_columns
         self.keyword = None
 
     def set_keyword(self, keyword) -> None:
@@ -110,16 +88,26 @@ class Stat:
         y_total = df[self.y_lbl].sum()
         df['percentage'] = (df[self.y_lbl] / y_total * 100).round(2)
 
-        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title)
+        custom_data_cols = ["percentage"] + self.extra_hover_columns
+        customdata = df[custom_data_cols].values
+
+        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, title=self.graph_title, custom_data=custom_data_cols)
+
+        hovertemplate_parts = [
+            f"{self.x_lbl}: %{{x}}",
+            f"{self.y_lbl}: %{{y}}",
+            "Percent: %{customdata[0]}%"
+        ]
+        for i, col in enumerate(self.extra_hover_columns, start=1):
+            extra_back = ""
+            if "percent" in col.lower():
+                extra_back = "%"
+            hovertemplate_parts.append(f"{col.title()}: %{{customdata[{i}]}}{extra_back}")
+        hovertemplate = "<br>".join(hovertemplate_parts)
 
         fig.update_traces(
             marker_color='rgb(179, 0, 0)',
-            hovertemplate=(
-                    f"{self.x_lbl}: %{{x}}<br>" +
-                    f"{self.y_lbl}: %{{y}}<br>" +
-                    "Percent: %{customdata[0]}%"
-            ),
-            customdata=df[['percentage']].values
+            hovertemplate=hovertemplate
         )
 
         fig.update_layout(
@@ -156,28 +144,32 @@ class Stat:
             "rgb(0, 184, 110)",
         ]
 
-        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, color=color_col, title=self.graph_title, custom_data=[color_col],
-                     color_discrete_sequence=shades)
+        custom_data_cols = [color_col] + self.extra_hover_columns
+        customdata = df[custom_data_cols].values
+
+        fig = px.bar(df, x=self.x_lbl, y=self.y_lbl, color=color_col, title=self.graph_title,
+                     custom_data=custom_data_cols, color_discrete_sequence=shades)
+
+        hovertemplate_parts = [
+            f"{self.x_lbl}: %{{x}}",
+            f"{color_col}: %{{customdata[0]}}",
+            f"{self.y_lbl}: %{{y}}{back}"
+        ]
+        for i, col in enumerate(self.extra_hover_columns, start=1):
+            extra_back = ""
+            if "percent" in col.lower():
+                extra_back = "%"
+            hovertemplate_parts.append(f"{col.title()}: %{{customdata[{i}]}}{extra_back}")
+        hovertemplate = "<br>".join(hovertemplate_parts)
 
         fig.update_traces(
-            hovertemplate=(
-                    f"{self.x_lbl}: %{{x}}<br>" +
-                    f"{color_col}: %{{customdata[0]}}<br>" +
-                    f"{self.y_lbl}: %{{y}}{back}"
-            ),
+            hovertemplate=hovertemplate,
             hoverlabel=dict(namelength=0)
         )
 
         fig.update_layout(
-            paper_bgcolor='rgb(245, 245, 245)',
-            legend=dict(
-                orientation="h",
-                y=2,
-                xanchor="center",
-                x=0.5,
-            )
+            paper_bgcolor='rgb(245, 245, 245)'
         )
-        # At width 655 overlaps with graph title
 
         return fig.to_html(full_html=False)
 
@@ -277,7 +269,7 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
     current_count, current_faculty = [], []
 
     for i, row in stats.iterrows():
-        if not years_left > 0:
+        if years_left <= 0:
             break
 
         year = row["Fiscal Year"]
@@ -314,11 +306,15 @@ def get_sfu_new_headcounts() -> dict[str: Stat]:
         graph_title="New Undergraduates by Faculty (2024/25)",
         df=latest_year_df
     )
+
+    combined_df["percent"] = (combined_df.groupby("Fiscal Year")["New Undergraduates Count"]
+                                 .transform(lambda x: x/x.sum() * 100)).round(2)
     growth_stat = Stat(
         label="New Growth",
         graph_title="Growth of New Undergraduates by Faculty (2024/25)",
         df=combined_df,
-        graph_type="grouped_bar"
+        graph_type="grouped_bar",
+        extra_hover_columns=["percent"]
     )
 
     return {
@@ -650,20 +646,7 @@ def get_outcome_category(category: SFUOutcomeCategories, tables, concentration: 
     return category.value.get_values(tables, concentration)
 
 
-class SFUProgram:
-    """
-    Represents an SFU program.
-    """
-    def __init__(self, faculty: str, program: str, men_count: int, women_count: int, nr_count: int):
-        self.faculty = faculty
-        self.program = program
-        self.men_count = nan_to_int(men_count)
-        self.women_count = nan_to_int(women_count)
-        self.nr_count = nan_to_int(nr_count)
-        self.total_count = self.men_count + self.women_count + self.nr_count
-
-
-def get_sfu_programs() -> list[SFUProgram]:
+def get_sfu_programs() -> pd.DataFrame:
     """
     Gets the cleaned up headcounts from 2023/24 for each SFU program.
     :return: A list of classes representing each program
@@ -671,115 +654,84 @@ def get_sfu_programs() -> list[SFUProgram]:
     stat_file = "data/headcount/program_distribution_ST04.xlsx"
     stats = pd.read_excel(stat_file, sheet_name="pivot table by gender", header=11, usecols="A:E")
 
-    programs = []
-    last_faculty = ""
-    for i, row in stats.iterrows():
-        if pd.isna(row["Program"]):
-            continue
-
-        if pd.isna(row["Faculty"]):
-            row["Faculty"] = last_faculty
-        else:
-            last_faculty = row["Faculty"]
-
-        if pd.isna(row["Men"]) and pd.isna(row["Women"]) and pd.isna(row["Not reported"]):
-            continue  # This needs to be after Faculty check to avoid wrong faculties in future
-
-        programs.append(SFUProgram(row["Faculty"], row["Program"], row["Men"], row["Women"], row["Not reported"]))
-
-    return programs
+    stats[["Faculty"]] = stats[["Faculty"]].ffill()
+    stats.dropna(subset=["Men", "Women", "Not reported"], how="all", inplace=True)
+    stats = stats[stats.apply(lambda x: "Total" not in x["Faculty"], axis=1)]
+    stats = stats.fillna(0)
+    stats.insert(2, "Total", stats["Men"] + stats["Women"] + stats["Not reported"])
+    return stats.copy()
 
 
-def get_sfu_faculty_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat]:
+def insert_gender_percents(df: pd.DataFrame):
+    df.insert(3, "Men percentage",
+                         round(df["Men"] / df["Total"] * 100, 2))
+    df.insert(5, "Women percentage",
+                         round(df["Women"] / df["Total"] * 100, 2))
+    df.insert(7, "Not reported percentage",
+                         round(df["Not reported"] / df["Total"] * 100, 2))
+
+def get_sfu_faculty_headcounts() -> dict[str: Stat]:
     """
     Gets the headcounts for each SFU faculty.
     :return: Stats of headcounts by faculty for three different measures: total-count, men-count, and women-count
     """
-    total_fac = {}
-    men_fac = {}
-    women_fac = {}
-    for program in sfu_programs:
-        total_fac[program.faculty] = total_fac.get(program.faculty, 0) + program.total_count
-        men_fac[program.faculty] = men_fac.get(program.faculty, 0) + program.men_count
-        women_fac[program.faculty] = women_fac.get(program.faculty, 0) + program.women_count
-
-    x_lbl = "Faculty"
-    y_lbl = "Count"
-    total_x, total_y = get_ordered_x_y(total_fac)
-    men_x, men_y = get_ordered_x_y(men_fac)
-    women_x, women_y = get_ordered_x_y(women_fac)
+    program_stats = get_sfu_programs()
+    program_stats = program_stats.groupby("Faculty")[["Total", "Men", "Women", "Not reported"]].sum()
+    program_stats = program_stats.reset_index()
+    insert_gender_percents(program_stats)
+    total_df = program_stats.sort_values("Total")
+    men_df = program_stats[["Faculty", "Men"]].sort_values("Men")
+    women_df = program_stats[["Faculty", "Women"]].sort_values("Women")
 
     return {
         "total-count": Stat(
             label="Total Count",
             graph_title="Total Count by Faculty (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: total_x,
-                y_lbl: total_y
-            })
+            df=total_df,
+            extra_hover_columns=["Men percentage", "Women percentage", "Not reported percentage"]
         ),
         "men-count": Stat(
             label="Men Count",
             graph_title="Men Count by Faculty (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: men_x,
-                y_lbl: men_y
-            })
+            df=men_df
         ),
         "women-count": Stat(
             label="Women Count",
             graph_title="Women Count by Faculty (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: women_x,
-                y_lbl: women_y
-            })
+            df=women_df
         )
     }
 
 
-def get_sfu_program_headcounts(sfu_programs: list[SFUProgram]) -> dict[str: Stat]:
+def get_sfu_program_headcounts() -> dict[str: Stat]:
     """
     Gets the headcounts for each SFU program.
     :return: Stats of headcounts by program for three different measures: total-count, men-count, and women-count
     """
-    x_lbl = "Program"
-    y_lbl = "Count"
-    total_ordered = sorted(sfu_programs, key=lambda p: p.total_count)
-    total_x = [p.program for p in total_ordered]
-    total_y = [p.total_count for p in total_ordered]
-    men_ordered = sorted(sfu_programs, key=lambda p: p.men_count)
-    men_x = [p.program for p in men_ordered]
-    men_y = [p.men_count for p in men_ordered]
-    women_ordered = sorted(sfu_programs, key=lambda p: p.women_count)
-    women_x = [p.program for p in women_ordered]
-    women_y = [p.women_count for p in women_ordered]
+    program_stats = get_sfu_programs()
+    program_stats = program_stats.drop("Faculty", axis=1)
+    insert_gender_percents(program_stats)
+    total_df = program_stats.sort_values("Total")
+    men_df = program_stats[["Program", "Men"]].sort_values("Men")
+    women_df = program_stats[["Program", "Women"]].sort_values("Women")
     return {
         "total-count": Stat(
             label="Total Count",
             graph_title="Total Count by Program (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: total_x,
-                y_lbl: total_y
-            })
+            df=total_df,
+            extra_hover_columns=["Men percentage", "Women percentage", "Not reported percentage"]
         ),
         "men-count": Stat(
             label="Men Count",
             graph_title="Men Count by Program (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: men_x,
-                y_lbl: men_y
-            })
+            df=men_df
         ),
         "women-count": Stat(
             label="Women Count",
             graph_title="Women Count by Program (2023/24)",
-            df=pd.DataFrame({
-                x_lbl: women_x,
-                y_lbl: women_y
-            })
+            df=women_df
         )
     }
-
 
 @functools.cache
 def get_all_stats() -> dict[str: StatCategory]:
@@ -787,10 +739,9 @@ def get_all_stats() -> dict[str: StatCategory]:
     Gets all the stats for the website.
     :return: a dict of stat categories
     """
-    sfu_programs = get_sfu_programs()
     return {
-        "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts(sfu_programs)),
-        "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts(sfu_programs)),
+        "faculty": StatCategory("Headcounts by Faculty", get_sfu_faculty_headcounts()),
+        "programs": StatCategory("Headcounts by Programs", get_sfu_program_headcounts()),
         "age": StatCategory("Headcounts by Age", get_sfu_age_headcounts()),
         "new": StatCategory("New Headcounts by Faculty", get_sfu_new_headcounts()),
         "units": StatCategory("Units Enrolled by Season", get_sfu_units_taken()),
@@ -823,6 +774,9 @@ def main():
                 # return redirect(url_for("main", category=cat_slug, view=first_stat))
             try:
                 gotten_stat = stat_cat.stat[stat]
+            except KeyError:
+                print("Could not find view from the category:", category)
+            else:
                 gotten_stat.set_keyword(keyword)
                 graph_html = gotten_stat.get_graph()
                 if gotten_stat.can_show_stats():
@@ -830,8 +784,6 @@ def main():
                     graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
                     graph_features["Median"] = round(gotten_stat.get_median(), 2)
                     graph_features["Mode"] = gotten_stat.get_mode_str()
-            except KeyError:
-                print("Could not find view from the category:", category)
             break
 
     categories = {}

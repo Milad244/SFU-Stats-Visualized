@@ -185,6 +185,3 @@ input:focus {
 .graph-container {
     overflow-x: hidden;
 }
-.js-plotly-plot .plotly .ease-bg {
-    right: 50px !important;
-}

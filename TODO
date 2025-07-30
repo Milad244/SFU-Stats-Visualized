@@ -8,7 +8,7 @@
 - [x] Add percent of total on hover
 - [x] Make plotly graphs look better
 - [x] Remove DS Store file
-- [ ] Add grouped bars for the total graphs or make the extra info appear on hover
+- [x] Allow extra info to appear on hover
 - [ ] Make getting data into separate py file and store it for faster loading speeds
 - [x] Make entire website look better (html/css changes)
 - [x] Make view button highlighted when in that view so users know what view they are looking at
