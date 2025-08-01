@@ -8,9 +8,11 @@ import pdfplumber
 import concurrent.futures
 import json
 
+
 def get_raw_path(file_name: str) -> str:
     raw_path = "data_handling/raw_data"
     return os.path.join(raw_path, file_name)
+
 
 def nan_to_int(num: int) -> int:
     """
@@ -686,6 +688,7 @@ def insert_gender_percents(df: pd.DataFrame):
                          round(df["Women"] / df["Total"] * 100, 2))
     df.insert(7, "Not reported percentage",
                          round(df["Not reported"] / df["Total"] * 100, 2))
+
 
 def get_sfu_faculty_headcounts() -> dict[str: Stat]:
     """
