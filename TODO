@@ -12,7 +12,7 @@
 - [x] Make getting data into separate py file and store it for faster loading speeds
 - [x] Make entire website look better (html/css changes)
 - [x] Make view button highlighted when in that view so users know what view they are looking at
-- [ ] Host the website
+- [x] Host the website
 
 ## Stats
 - [x] Undergraduate count by program & faculty. Sorted by genders. From ST04.

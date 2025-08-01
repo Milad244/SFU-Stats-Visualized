@@ -1,14 +1,14 @@
 # SFU Undergraduate Stats Visualized
 
 ## Access
-Working on it.
+Website: https://milad244.pythonanywhere.com/
 
 ## Description
-**Simon Fraser University Undergraduate Statistics Visualized** takes the abundant data that SFU collects and repackages it into a user-friendly experience containing the most significant information. Currently, this project only plans to focus on data from 2023/24 regarding undergraduate students.
+**Simon Fraser University Undergraduate Statistics Visualized** takes the abundant data that SFU collects and repackages it into a user-friendly Flask website containing the most significant information. This project mainly focuses on data from 2023/24 regarding undergraduate students.
 
 ## Status
-Ongoing. 2025-06-29 to current.
+Completed. 2025-06-29 to 2025-08-01.
 
 ## Resources Used
 - SFU data from [SFU Institutional Research and Planning - Students](https://www.sfu.ca/irp/students.html)
-- Python
+- Python and Python modules - mainly Flask, Pandas, Plotly, and PDFPlumber.
