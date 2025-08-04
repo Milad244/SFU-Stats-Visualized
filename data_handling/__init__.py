@@ -1,1 +1,0 @@
-from .data_manager import get_all_stats

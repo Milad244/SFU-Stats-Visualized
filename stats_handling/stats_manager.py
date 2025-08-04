@@ -1,4 +1,4 @@
-from data_handling.data_cleaner import write_all_stats, load_all_stats
+from stats_handling.stats_cleaner import write_all_stats, load_all_stats
 
 
 def write_then_read_stats():

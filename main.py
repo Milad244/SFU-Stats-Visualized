@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from data_handling import get_all_stats
+from stats_handling import get_all_stats
 
 app = Flask(__name__)
 
@@ -17,29 +17,26 @@ def main():
     graph_html = None
     graph_features = {}
 
-    all_stats = get_all_stats()
+    all_stats = get_all_stats(new=False)
 
+    none_cat = False
     if category is None:
-        return redirect(url_for("main", category="faculty"))
-
-    for cat_slug, stat_cat in all_stats.items():
-        if category == cat_slug:
-            if stat is None:
-                first_stat = list(stat_cat.stats.items())[0][0]
-                # return redirect(url_for("main", category=cat_slug, view=first_stat))
-            try:
-                gotten_stat = stat_cat.stats[stat]
-            except KeyError:
-                print("Could not find view from the category:", category)
-            else:
-                gotten_stat.set_keyword(keyword)
-                graph_html = gotten_stat.get_graph()
-                if gotten_stat.can_show_stats():
-                    graph_features["Total"] = round(gotten_stat.get_total(), 2)
-                    graph_features["Mean"] = round(gotten_stat.get_mean(), 2)
-                    graph_features["Median"] = round(gotten_stat.get_median(), 2)
-                    graph_features["Mode"] = gotten_stat.get_mode_str()
-            break
+        none_cat = True
+        # return redirect(url_for("main", category="faculty"))
+    else:
+        for cat_slug, stat_cat in all_stats.items():
+            if category == cat_slug:
+                if stat is None:
+                    first_stat = list(stat_cat.stats.items())[0][0]
+                    return redirect(url_for("main", category=cat_slug, view=first_stat))
+                try:
+                    gotten_stat = stat_cat.stats[stat]
+                except KeyError:
+                    print("Could not find view from the category:", category)
+                else:
+                    gotten_stat.set_keyword(keyword)
+                    graph_html = gotten_stat.get_graph()
+                break
 
     categories = {}
     for cat_slug, stat_cat in all_stats.items():
@@ -55,8 +52,9 @@ def main():
         {"label": "GitHub", "external_url": "https://github.com/Milad244/SFU-Stats-Visualized"},
         {"label": "Source", "external_url": "https://www.sfu.ca/irp/students.html"}
     ]
-    return render_template("index.html", title="SFU Undergraduate Statistics Visualized", categories=categories,
-                           buttons=buttons, graph_html=graph_html, graph_features=graph_features)
+    return render_template("index.html", title="SFU Undergraduate Statistics Visualized",
+                           none_cat=none_cat, categories=categories, buttons=buttons,
+                           graph_html=graph_html, graph_features=graph_features)
 
 
 if __name__ == '__main__':

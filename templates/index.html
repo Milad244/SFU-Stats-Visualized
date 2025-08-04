@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <title>SFU Undergraduate Stats Visualized</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/SFU_Icon_v2.png">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=WDXL+Lubrifont+SC&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
 </head>
 <body>
     <h1>{{ title }}</h1>
@@ -15,6 +18,7 @@
     <div class="categories">
         <div class="split-dropdown">
             <button class="dropdown-main-button">
+                {% if none_cat %} Select Category {% endif %}
                 {% for key, value in categories.items() %}
                     {% if request.args.get("category") == key %}
                         {{ value.title }}

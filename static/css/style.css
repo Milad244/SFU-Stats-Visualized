@@ -1,18 +1,19 @@
 * {
     text-align: center;
     box-sizing: border-box;
-    font-family: "WDXL Lubrifont SC", sans-serif;
-    /**font-family: "Roboto", sans-serif;*/
+    font-family: "Raleway", sans-serif;
 }
 
 body {
-    background-color: rgb(245, 245, 245);
+    background-color: #f8f3ff;
 }
 
 h1 {
     color: rgb(179, 0, 0);
     font-size: 3.5em;
     margin: 25px;
+    font-weight: bold;
+    font-family: "Roboto", sans-serif;
 }
 
 a {
@@ -123,7 +124,17 @@ button:active {
 }
 
 #active-view {
-    background-color: #061f3c
+    background-color: #570047;
+}
+
+#active-view:hover {
+    background-color: #6f005b;
+    box-shadow: 0 4px 10px rgba(87, 0, 71, 0.4);
+}
+
+#active-view:active {
+    background-color: #4a003b;
+    box-shadow: 0 2px 6px rgba(87, 0, 71, 0.6);
 }
 
 .views button {
@@ -178,10 +189,11 @@ input:focus {
     padding-right: 20px;
     font-size: 1.75em;
     font-weight: bold;
-    color: #01558a;
+    color: #7aa8e4;
     margin: 0;
 }
 
 .graph-container {
     overflow-x: hidden;
+    padding: 10px;
 }
