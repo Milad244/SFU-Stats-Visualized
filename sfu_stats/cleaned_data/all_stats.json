@@ -304,22 +304,22 @@
                         "Not reported percentage": 0.0
                     },
                     {
-                        "Program": "Operations Research",
-                        "Total": 7.0,
-                        "Men": 5.0,
-                        "Men percentage": 71.43,
-                        "Women": 2.0,
-                        "Women percentage": 28.57,
-                        "Not reported": 0.0,
-                        "Not reported percentage": 0.0
-                    },
-                    {
                         "Program": "Geography",
                         "Total": 7.0,
                         "Men": 4.0,
                         "Men percentage": 57.14,
                         "Women": 3.0,
                         "Women percentage": 42.86,
+                        "Not reported": 0.0,
+                        "Not reported percentage": 0.0
+                    },
+                    {
+                        "Program": "Operations Research",
+                        "Total": 7.0,
+                        "Men": 5.0,
+                        "Men percentage": 71.43,
+                        "Women": 2.0,
+                        "Women percentage": 28.57,
                         "Not reported": 0.0,
                         "Not reported percentage": 0.0
                     },
@@ -394,16 +394,6 @@
                         "Not reported percentage": 0.0
                     },
                     {
-                        "Program": "Sustainable Business",
-                        "Total": 23.0,
-                        "Men": 10.0,
-                        "Men percentage": 43.48,
-                        "Women": 12.0,
-                        "Women percentage": 52.17,
-                        "Not reported": 1.0,
-                        "Not reported percentage": 4.35
-                    },
-                    {
                         "Program": "Mathematical Physics",
                         "Total": 23.0,
                         "Men": 19.0,
@@ -412,6 +402,16 @@
                         "Women percentage": 17.39,
                         "Not reported": 0.0,
                         "Not reported percentage": 0.0
+                    },
+                    {
+                        "Program": "Sustainable Business",
+                        "Total": 23.0,
+                        "Men": 10.0,
+                        "Men percentage": 43.48,
+                        "Women": 12.0,
+                        "Women percentage": 52.17,
+                        "Not reported": 1.0,
+                        "Not reported percentage": 4.35
                     },
                     {
                         "Program": "Labour Studies",
@@ -474,16 +474,6 @@
                         "Not reported percentage": 4.65
                     },
                     {
-                        "Program": "Applied Mathematics",
-                        "Total": 44.0,
-                        "Men": 33.0,
-                        "Men percentage": 75.0,
-                        "Women": 11.0,
-                        "Women percentage": 25.0,
-                        "Not reported": 0.0,
-                        "Not reported percentage": 0.0
-                    },
-                    {
                         "Program": "Physical Geography",
                         "Total": 44.0,
                         "Men": 19.0,
@@ -492,6 +482,16 @@
                         "Women percentage": 54.55,
                         "Not reported": 1.0,
                         "Not reported percentage": 2.27
+                    },
+                    {
+                        "Program": "Applied Mathematics",
+                        "Total": 44.0,
+                        "Men": 33.0,
+                        "Men percentage": 75.0,
+                        "Women": 11.0,
+                        "Women percentage": 25.0,
+                        "Not reported": 0.0,
+                        "Not reported percentage": 0.0
                     },
                     {
                         "Program": "Applied Physics",
@@ -544,16 +544,6 @@
                         "Not reported percentage": 0.0
                     },
                     {
-                        "Program": "Actuarial Science",
-                        "Total": 68.0,
-                        "Men": 43.0,
-                        "Men percentage": 63.24,
-                        "Women": 25.0,
-                        "Women percentage": 36.76,
-                        "Not reported": 0.0,
-                        "Not reported percentage": 0.0
-                    },
-                    {
                         "Program": "Gender, Sexuality, and Women's Studies",
                         "Total": 68.0,
                         "Men": 4.0,
@@ -562,6 +552,16 @@
                         "Women percentage": 89.71,
                         "Not reported": 3.0,
                         "Not reported percentage": 4.41
+                    },
+                    {
+                        "Program": "Actuarial Science",
+                        "Total": 68.0,
+                        "Men": 43.0,
+                        "Men percentage": 63.24,
+                        "Women": 25.0,
+                        "Women percentage": 36.76,
+                        "Not reported": 0.0,
+                        "Not reported percentage": 0.0
                     },
                     {
                         "Program": "Professional Linking Program",
@@ -998,11 +998,7 @@
                         "Men": 1.0
                     },
                     {
-                        "Program": "Geography",
-                        "Men": 4.0
-                    },
-                    {
-                        "Program": "Business, Philosophy and the Law",
+                        "Program": "Gender, Sexuality, and Women's Studies",
                         "Men": 4.0
                     },
                     {
@@ -1010,23 +1006,27 @@
                         "Men": 4.0
                     },
                     {
-                        "Program": "Indigenous Studies",
-                        "Men": 4.0
-                    },
-                    {
-                        "Program": "Gender, Sexuality, and Women's Studies",
-                        "Men": 4.0
-                    },
-                    {
                         "Program": "Dance",
                         "Men": 4.0
                     },
                     {
-                        "Program": "Operations Research",
-                        "Men": 5.0
+                        "Program": "Business, Philosophy and the Law",
+                        "Men": 4.0
+                    },
+                    {
+                        "Program": "Indigenous Studies",
+                        "Men": 4.0
+                    },
+                    {
+                        "Program": "Geography",
+                        "Men": 4.0
                     },
                     {
                         "Program": "Business, Philosophy and the Law",
+                        "Men": 5.0
+                    },
+                    {
+                        "Program": "Operations Research",
                         "Men": 5.0
                     },
                     {
@@ -1058,15 +1058,15 @@
                         "Men": 10.0
                     },
                     {
-                        "Program": "Labour Studies",
-                        "Men": 14.0
-                    },
-                    {
                         "Program": "Art, Performance, and Cinema Studies",
                         "Men": 14.0
                     },
                     {
                         "Program": "Professional Linking Program",
+                        "Men": 14.0
+                    },
+                    {
+                        "Program": "Labour Studies",
                         "Men": 14.0
                     },
                     {
@@ -1078,27 +1078,27 @@
                         "Men": 17.0
                     },
                     {
-                        "Program": "Mathematical Physics",
-                        "Men": 19.0
-                    },
-                    {
                         "Program": "Physical Geography",
                         "Men": 19.0
                     },
                     {
-                        "Program": "Theatre",
-                        "Men": 20.0
+                        "Program": "Mathematical Physics",
+                        "Men": 19.0
                     },
                     {
                         "Program": "Visual Arts",
                         "Men": 20.0
                     },
                     {
-                        "Program": "Music and Sound",
-                        "Men": 23.0
+                        "Program": "Theatre",
+                        "Men": 20.0
                     },
                     {
                         "Program": "Sociology",
+                        "Men": 23.0
+                    },
+                    {
+                        "Program": "Music and Sound",
                         "Men": 23.0
                     },
                     {
@@ -1122,11 +1122,11 @@
                         "Men": 34.0
                     },
                     {
-                        "Program": "Film",
+                        "Program": "Mathematics and Computing Science",
                         "Men": 39.0
                     },
                     {
-                        "Program": "Mathematics and Computing Science",
+                        "Program": "Film",
                         "Men": 39.0
                     },
                     {
@@ -1278,7 +1278,7 @@
                         "Women": 0.0
                     },
                     {
-                        "Program": "French, History and Politics",
+                        "Program": "Geographic Information Science",
                         "Women": 1.0
                     },
                     {
@@ -1286,7 +1286,7 @@
                         "Women": 1.0
                     },
                     {
-                        "Program": "Geographic Information Science",
+                        "Program": "French, History and Politics",
                         "Women": 1.0
                     },
                     {
@@ -1366,11 +1366,11 @@
                         "Women": 25.0
                     },
                     {
-                        "Program": "Physics",
+                        "Program": "Anthropology",
                         "Women": 26.0
                     },
                     {
-                        "Program": "Anthropology",
+                        "Program": "Physics",
                         "Women": 26.0
                     },
                     {
@@ -2720,13 +2720,13 @@
                 "graph_title": "Response Count Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
                     {
-                        "Concentration": "Economics",
-                        "Count": 428.0,
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Count": 79.0,
                         "Response": "Baccalaureate Graduates Survey Cohort"
                     },
                     {
-                        "Concentration": "Economics",
-                        "Count": 58.0,
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Count": 26.0,
                         "Response": "Survey Respondents"
                     },
                     {
@@ -2737,6 +2737,96 @@
                     {
                         "Concentration": "Biology/Biological Sciences",
                         "Count": 30.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Count": 686.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Count": 127.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Count": 316.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Count": 65.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Count": 359.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Count": 102.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Count": 152.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Count": 45.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Count": 379.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Count": 81.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Count": 428.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Count": 58.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Count": 400.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Count": 79.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Count": 136.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Count": 43.0,
+                        "Response": "Survey Respondents"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Count": 306.0,
+                        "Response": "Baccalaureate Graduates Survey Cohort"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Count": 78.0,
                         "Response": "Survey Respondents"
                     },
                     {
@@ -2768,96 +2858,6 @@
                         "Concentration": "Psychology",
                         "Count": 93.0,
                         "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Count": 379.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Count": 81.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Count": 400.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Count": 79.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Count": 316.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Count": 65.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Count": 79.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Count": 26.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Count": 686.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Count": 127.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Count": 359.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Count": 102.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Count": 306.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Count": 78.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Count": 152.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Count": 45.0,
-                        "Response": "Survey Respondents"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Count": 136.0,
-                        "Response": "Baccalaureate Graduates Survey Cohort"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Count": 43.0,
-                        "Response": "Survey Respondents"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -2868,22 +2868,22 @@
                 "graph_title": "Satisfaction Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
                     {
-                        "Concentration": "Economics",
-                        "Percentage": "28%",
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "17%",
                         "Satisfaction Level": "Very Satisfied"
                     },
                     {
-                        "Concentration": "Economics",
-                        "Percentage": "66%",
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "71%",
                         "Satisfaction Level": "Satisfied"
                     },
                     {
-                        "Concentration": "Economics",
-                        "Percentage": "7%",
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "13%",
                         "Satisfaction Level": "Dissatisfied"
                     },
                     {
-                        "Concentration": "Economics",
+                        "Concentration": "Biochemistry And Molecular Biology",
                         "Percentage": "0%",
                         "Satisfaction Level": "Very Dissatisfied"
                     },
@@ -2905,6 +2905,186 @@
                     {
                         "Concentration": "Biology/Biological Sciences",
                         "Percentage": "0%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "23%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "69%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "6%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "2%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "29%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "62%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "6%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "3%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "17%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "72%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "8%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "3%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "9%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "73%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "9%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "9%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "26%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "69%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "5%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "0%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Percentage": "28%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Percentage": "66%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Percentage": "7%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Economics",
+                        "Percentage": "0%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Percentage": "18%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Percentage": "47%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Percentage": "28%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Education",
+                        "Percentage": "8%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "14%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "69%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "17%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "0%",
+                        "Satisfaction Level": "Very Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "27%",
+                        "Satisfaction Level": "Very Satisfied"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "62%",
+                        "Satisfaction Level": "Satisfied"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "9%",
+                        "Satisfaction Level": "Dissatisfied"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "1%",
                         "Satisfaction Level": "Very Dissatisfied"
                     },
                     {
@@ -2966,186 +3146,6 @@
                         "Concentration": "Psychology",
                         "Percentage": "2%",
                         "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "26%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "69%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "5%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "0%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "18%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "47%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "28%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "8%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "29%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "62%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "6%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "3%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "17%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "71%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "13%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "0%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "23%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "69%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "6%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "2%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "17%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "72%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "8%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "3%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "27%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "62%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "9%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "1%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "9%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "73%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "9%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "9%",
-                        "Satisfaction Level": "Very Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "14%",
-                        "Satisfaction Level": "Very Satisfied"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "69%",
-                        "Satisfaction Level": "Satisfied"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "17%",
-                        "Satisfaction Level": "Dissatisfied"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "0%",
-                        "Satisfaction Level": "Very Dissatisfied"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -3155,6 +3155,146 @@
                 "label": "Usefulness",
                 "graph_title": "Usefulness Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "21%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "57%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "7%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "14%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "19%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "50%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "31%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "0%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "35%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "56%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "7%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "3%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "31%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "48%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "17%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "4%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "46%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "48%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "5%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "1%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "32%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "56%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "12%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "0%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "27%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "44%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "18%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "11%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
                     {
                         "Concentration": "Economics",
                         "Percentage": "27%",
@@ -3176,23 +3316,63 @@
                         "Usefulness Level": "Not at All Useful"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "19%",
+                        "Concentration": "Education",
+                        "Percentage": "40%",
                         "Usefulness Level": "Very Useful"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "50%",
+                        "Concentration": "Education",
+                        "Percentage": "38%",
                         "Usefulness Level": "Somewhat Useful"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "31%",
+                        "Concentration": "Education",
+                        "Percentage": "18%",
                         "Usefulness Level": "Not Very Useful"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "0%",
+                        "Concentration": "Education",
+                        "Percentage": "4%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "24%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "62%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "11%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "3%",
+                        "Usefulness Level": "Not at All Useful"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "33%",
+                        "Usefulness Level": "Very Useful"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "52%",
+                        "Usefulness Level": "Somewhat Useful"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "13%",
+                        "Usefulness Level": "Not Very Useful"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "3%",
                         "Usefulness Level": "Not at All Useful"
                     },
                     {
@@ -3254,186 +3434,6 @@
                         "Concentration": "Psychology",
                         "Percentage": "7%",
                         "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "27%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "44%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "18%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "11%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "40%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "38%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "18%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "4%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "31%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "48%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "17%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "4%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "21%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "57%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "7%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "14%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "35%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "56%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "7%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "3%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "46%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "48%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "5%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "1%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "33%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "52%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "13%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "3%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "32%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "56%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "12%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "0%",
-                        "Usefulness Level": "Not at All Useful"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "24%",
-                        "Usefulness Level": "Very Useful"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "62%",
-                        "Usefulness Level": "Somewhat Useful"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "11%",
-                        "Usefulness Level": "Not Very Useful"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "3%",
-                        "Usefulness Level": "Not at All Useful"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -3443,6 +3443,76 @@
                 "label": "Regret",
                 "graph_title": "Regret Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "48%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "52%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "63%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "38%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "79%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "21%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "68%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "32%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "78%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "22%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "60%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "40%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "64%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "36%",
+                        "Would Select the Same Program Again": "No"
+                    },
                     {
                         "Concentration": "Economics",
                         "Percentage": "58%",
@@ -3454,13 +3524,33 @@
                         "Would Select the Same Program Again": "No"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "63%",
+                        "Concentration": "Education",
+                        "Percentage": "67%",
                         "Would Select the Same Program Again": "Yes"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
+                        "Concentration": "Education",
+                        "Percentage": "33%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "62%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Engineering",
                         "Percentage": "38%",
+                        "Would Select the Same Program Again": "No"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "61%",
+                        "Would Select the Same Program Again": "Yes"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "39%",
                         "Would Select the Same Program Again": "No"
                     },
                     {
@@ -3492,96 +3582,6 @@
                         "Concentration": "Psychology",
                         "Percentage": "36%",
                         "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "64%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "36%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "67%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "33%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "68%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "32%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "48%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "52%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "79%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "21%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "78%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "22%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "61%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "39%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "60%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "40%",
-                        "Would Select the Same Program Again": "No"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "62%",
-                        "Would Select the Same Program Again": "Yes"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "38%",
-                        "Would Select the Same Program Again": "No"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -3591,6 +3591,76 @@
                 "label": "Employment Rate",
                 "graph_title": "Employment Rate Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "54%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "17.6%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "53%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "15.8%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "84%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "7.8%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "83%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "15.6%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "81%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "9.8%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "76%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "20.9%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "81%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "10.8%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
                     {
                         "Concentration": "Economics",
                         "Percentage": "64%",
@@ -3602,13 +3672,33 @@
                         "Employment Status": "Unemployment Rate**"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "53%",
+                        "Concentration": "Education",
+                        "Percentage": "97%",
                         "Employment Status": "Employment Rate*"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "15.8%",
+                        "Concentration": "Education",
+                        "Percentage": "1.3%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "86%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "9.8%",
+                        "Employment Status": "Unemployment Rate**"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "82%",
+                        "Employment Status": "Employment Rate*"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "8.6%",
                         "Employment Status": "Unemployment Rate**"
                     },
                     {
@@ -3640,96 +3730,6 @@
                         "Concentration": "Psychology",
                         "Percentage": "5.0%",
                         "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "81%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "10.8%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "97%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "1.3%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "83%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "15.6%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "54%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "17.6%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "84%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "7.8%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "81%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "9.8%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "82%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "8.6%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "76%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "20.9%",
-                        "Employment Status": "Unemployment Rate**"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "86%",
-                        "Employment Status": "Employment Rate*"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "9.8%",
-                        "Employment Status": "Unemployment Rate**"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -3739,6 +3739,146 @@
                 "label": "Job Relation",
                 "graph_title": "Job Relation Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "14%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "36%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "14%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Percentage": "36%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "19%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "25%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "31%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Percentage": "25%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "35%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "50%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "10%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Percentage": "5%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "17%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "46%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "20%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Percentage": "17%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "67%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "27%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "1%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Percentage": "5%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "41%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "35%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "9%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Percentage": "15%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "23%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "37%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "18%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Percentage": "22%",
+                        "Job Relation": "Not at All Related"
+                    },
                     {
                         "Concentration": "Economics",
                         "Percentage": "14%",
@@ -3760,23 +3900,63 @@
                         "Job Relation": "Not at All Related"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "19%",
+                        "Concentration": "Education",
+                        "Percentage": "86%",
                         "Job Relation": "Very Related"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "25%",
+                        "Concentration": "Education",
+                        "Percentage": "9%",
                         "Job Relation": "Somewhat Related"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "31%",
+                        "Concentration": "Education",
+                        "Percentage": "3%",
                         "Job Relation": "Not Very Related"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Percentage": "25%",
+                        "Concentration": "Education",
+                        "Percentage": "3%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "24%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "65%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "8%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Percentage": "3%",
+                        "Job Relation": "Not at All Related"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "23%",
+                        "Job Relation": "Very Related"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "45%",
+                        "Job Relation": "Somewhat Related"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "16%",
+                        "Job Relation": "Not Very Related"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Percentage": "16%",
                         "Job Relation": "Not at All Related"
                     },
                     {
@@ -3838,186 +4018,6 @@
                         "Concentration": "Psychology",
                         "Percentage": "22%",
                         "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "23%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "37%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "18%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Percentage": "22%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "86%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "9%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "3%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Percentage": "3%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "17%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "46%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "20%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Percentage": "17%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "14%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "36%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "14%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Percentage": "36%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "35%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "50%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "10%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Percentage": "5%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "67%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "27%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "1%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Percentage": "5%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "23%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "45%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "16%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Percentage": "16%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "41%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "35%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "9%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Percentage": "15%",
-                        "Job Relation": "Not at All Related"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "24%",
-                        "Job Relation": "Very Related"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "65%",
-                        "Job Relation": "Somewhat Related"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "8%",
-                        "Job Relation": "Not Very Related"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Percentage": "3%",
-                        "Job Relation": "Not at All Related"
                     }
                 ],
                 "graph_type": "grouped_bar",
@@ -4027,6 +4027,76 @@
                 "label": "Income",
                 "graph_title": "Income Across Concentrations (2024 Survey of 2022 Baccalaureate Graduates)",
                 "df": [
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Amount": 50950.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Biochemistry And Molecular Biology",
+                        "Amount": 68650.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Amount": 65000.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Biology/Biological Sciences",
+                        "Amount": 81708.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Amount": 74000.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Business/Commerce",
+                        "Amount": 82896.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Amount": 70000.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Communication",
+                        "Amount": 73810.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Amount": 100000.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Computer Science",
+                        "Amount": 103778.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Amount": 59300.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Computer Software And Media Applications",
+                        "Amount": 64283.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Amount": 75000.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Criminology",
+                        "Amount": 74226.0,
+                        "Income": "Average Annual Income"
+                    },
                     {
                         "Concentration": "Economics",
                         "Amount": 60000.0,
@@ -4038,13 +4108,33 @@
                         "Income": "Average Annual Income"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Amount": 65000.0,
+                        "Concentration": "Education",
+                        "Amount": 72484.0,
                         "Income": "Median Annual Income"
                     },
                     {
-                        "Concentration": "Biology/Biological Sciences",
-                        "Amount": 81708.0,
+                        "Concentration": "Education",
+                        "Amount": 77119.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Amount": 79810.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Engineering",
+                        "Amount": 95010.0,
+                        "Income": "Average Annual Income"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Amount": 71458.0,
+                        "Income": "Median Annual Income"
+                    },
+                    {
+                        "Concentration": "Health Services/Allied Health/Health Sciences",
+                        "Amount": 83424.0,
                         "Income": "Average Annual Income"
                     },
                     {
@@ -4075,96 +4165,6 @@
                     {
                         "Concentration": "Psychology",
                         "Amount": 63311.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Amount": 75000.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Criminology",
-                        "Amount": 74226.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Amount": 72484.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Education",
-                        "Amount": 77119.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Amount": 70000.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Communication",
-                        "Amount": 73810.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Amount": 50950.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Biochemistry And Molecular Biology",
-                        "Amount": 68650.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Amount": 74000.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Business/Commerce",
-                        "Amount": 82896.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Amount": 100000.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Computer Science",
-                        "Amount": 103778.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Amount": 71458.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Health Services/Allied Health/Health Sciences",
-                        "Amount": 83424.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Amount": 59300.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Computer Software And Media Applications",
-                        "Amount": 64283.0,
-                        "Income": "Average Annual Income"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Amount": 79810.0,
-                        "Income": "Median Annual Income"
-                    },
-                    {
-                        "Concentration": "Engineering",
-                        "Amount": 95010.0,
                         "Income": "Average Annual Income"
                     }
                 ],

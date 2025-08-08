@@ -1,4 +1,4 @@
-from stats_handling.stats_cleaner import write_all_stats, load_all_stats
+from sfu_stats.data_processing.stats_cleaner import write_all_stats, load_all_stats
 
 
 def write_then_read_stats():

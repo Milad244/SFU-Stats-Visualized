@@ -249,4 +249,4 @@ class StatCategory:
         return {
             "title": self.title,
             "stats": {k: v.to_dict() for k, v in self.stats.items()}
-       }
+        }

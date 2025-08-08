@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for
-from stats_handling import get_all_stats
+from sfu_stats import get_all_stats
 
 app = Flask(__name__)
 
@@ -7,8 +7,8 @@ app = Flask(__name__)
 @app.route("/")
 def main():
     """
-    Creates our index page. This controls all the content shown in the site including the data selection options,
-    the selected data, and all other navigation.
+    Creates our index page. This controls all the content shown in the site including the cleaned_data selection options,
+    the selected cleaned_data, and all other navigation.
     :return: the rendering string
     """
     category = request.args.get("category")
@@ -17,7 +17,7 @@ def main():
     graph_html = None
     graph_features = {}
 
-    all_stats = get_all_stats(new=False)
+    all_stats = get_all_stats(new=True)
 
     none_cat = False
     if category is None:

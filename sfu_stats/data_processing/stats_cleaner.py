@@ -7,11 +7,33 @@ import pdfplumber
 import concurrent.futures
 import json
 from .stats_structure import Stat, StatCategory
+from pathlib import Path
+
+
+def get_project_root() -> str:
+    """
+    Gets the project root folder.
+    :return: the path of the project root
+    """
+    return str(Path(__file__).parent.parent)
 
 
 def get_raw_path(file_name: str) -> str:
-    raw_path = "stats_handling/raw_data"
-    return os.path.join(raw_path, file_name)
+    """
+    Gets the path for varying raw data files.
+    :param file_name: the relative file path from raw_data
+    :return: the full path for the given raw data file
+    """
+    raw_path = "raw_data"
+    return os.path.join(get_project_root(), raw_path, file_name)
+
+
+def get_output_data_path() -> str:
+    """
+    Gets the relative path for the cleaned output data
+    :return: the relative path for the cleaned output data
+    """
+    return "sfu_stats/cleaned_data/all_stats.json"
 
 
 def get_sfu_age_headcounts() -> dict[str: Stat]:
@@ -542,9 +564,9 @@ def get_outcome_category(category: SFUOutcomeCategories, tables, concentration: 
 
 
 @functools.cache
-def get_all_stats() -> dict[str: StatCategory]:
+def get_all_cleaned_stats() -> dict[str: StatCategory]:
     """
-    Gets all the stats for the website.
+    Gets all the cleaned stats for the website.
     :return: a dict of stat categories
     """
     return {
@@ -563,9 +585,9 @@ def write_all_stats() -> None:
     and then dumps them in a json file named all_stats.json.
     :return: None
     """
-    all_stats = get_all_stats()
+    all_stats = get_all_cleaned_stats()
     serializable = {k: v.to_dict() for k, v in all_stats.items()}
-    with open("all_stats.json", "w") as f:
+    with open(get_output_data_path(), "w") as f:
         json.dump(serializable, f, indent=4)
 
 
@@ -574,7 +596,7 @@ def load_all_stats() -> dict[str: StatCategory]:
     Loads all the stats from all_stats.json into a dict of stat categories.
     :return: a dict of stat categories
     """
-    with open("all_stats.json", "r") as f:
+    with open(get_output_data_path(), "r") as f:
         raw = json.load(f)
 
     result = {}
