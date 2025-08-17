@@ -1,4 +1,4 @@
-# SFU Undergraduate Stats Visualized
+# SFU Undergraduate Statistics Visualized
 
 ## Access
 Website: https://milad244.pythonanywhere.com/
